@@ -1,0 +1,7 @@
+# Caddy reverse proxy + automatic HTTPS (Let's Encrypt).
+# Fill in once a domain exists (§9/§10). Deploy in a Timeweb EU region so the
+# backend can reach api.anthropic.com (Russia is not an Anthropic-supported region).
+#
+# api.example.com {
+#     reverse_proxy backend:8080
+# }
