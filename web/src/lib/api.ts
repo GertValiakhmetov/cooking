@@ -1,5 +1,6 @@
 import { auth } from "./auth.svelte";
 import { API_URL } from "./config";
+import type { ContentBlock, Recipe } from "./recipe";
 
 export class ApiError extends Error {
   constructor(
@@ -26,6 +27,7 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     const body = (await res.json().catch(() => null)) as { error?: string } | null;
     throw new ApiError(res.status, body?.error ?? `Ошибка сервера (HTTP ${res.status})`);
   }
+  if (res.status === 204) return undefined as T;
   return res.json() as Promise<T>;
 }
 
@@ -35,6 +37,17 @@ export type Conversation = {
   title: string | null;
   createdAt: string;
   updatedAt: string;
+};
+export type StoredMessage = {
+  id: string;
+  role: "user" | "assistant";
+  content: ContentBlock[];
+  createdAt: string;
+};
+export type SavedRecipe = Recipe & {
+  id: string;
+  source: "ai" | "manual";
+  createdAt: string;
 };
 
 export const api = {
@@ -48,5 +61,21 @@ export const api = {
   conversations: {
     list: () => request<{ conversations: Conversation[] }>("/conversations"),
     create: () => request<Conversation>("/conversations", { method: "POST" }),
+    rename: (id: string, title: string) =>
+      request<Conversation>(`/conversations/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ title }),
+      }),
+    remove: (id: string) => request<{ ok: true }>(`/conversations/${id}`, { method: "DELETE" }),
+    messages: (id: string) =>
+      request<{ messages: StoredMessage[] }>(`/conversations/${id}/messages`),
+  },
+
+  recipes: {
+    save: (recipe: Recipe) =>
+      request<SavedRecipe>("/recipes", {
+        method: "POST",
+        body: JSON.stringify({ ...recipe, source: "ai" }),
+      }),
   },
 };

@@ -102,6 +102,64 @@ conversationRoutes.get(
   },
 );
 
+const renameSchema = z.object({ title: z.string().min(1).max(200) });
+const idParam = {
+  name: "id",
+  in: "path" as const,
+  required: true,
+  schema: { type: "string" as const, format: "uuid" },
+};
+
+conversationRoutes.patch(
+  "/:id",
+  describeRoute({
+    tags: ["conversations"],
+    summary: "Переименовать диалог",
+    parameters: [idParam],
+    requestBody: jsonBody(renameSchema),
+    responses: {
+      200: { description: "Обновлённый диалог" },
+      404: { description: "Не найден или принадлежит другому пользователю" },
+    },
+  }),
+  async (c) => {
+    const body = renameSchema.safeParse(await c.req.json().catch(() => null));
+    if (!body.success) return c.json({ error: "validation_error" }, 400);
+    const [row] = await db
+      .update(conversations)
+      .set({ title: body.data.title, updatedAt: new Date() })
+      .where(
+        and(eq(conversations.id, c.req.param("id")), eq(conversations.userId, c.get("userId"))),
+      )
+      .returning();
+    if (!row) return c.json({ error: "not_found" }, 404);
+    return c.json(row);
+  },
+);
+
+conversationRoutes.delete(
+  "/:id",
+  describeRoute({
+    tags: ["conversations"],
+    summary: "Удалить диалог",
+    parameters: [idParam],
+    responses: {
+      200: { description: "Удалено" },
+      404: { description: "Не найден или принадлежит другому пользователю" },
+    },
+  }),
+  async (c) => {
+    const [row] = await db
+      .delete(conversations)
+      .where(
+        and(eq(conversations.id, c.req.param("id")), eq(conversations.userId, c.get("userId"))),
+      )
+      .returning({ id: conversations.id });
+    if (!row) return c.json({ error: "not_found" }, 404);
+    return c.json({ ok: true });
+  },
+);
+
 // ---- /chat (SSE) -------------------------------------------------------------
 const chatSchema = z.object({
   conversationId: z.string().uuid(),
@@ -155,6 +213,12 @@ chatRoutes.post(
       content: [{ type: "text", text: message }],
     };
     await persistMessage(conv.id, userMessage);
+
+    // Auto-title a fresh conversation from its first message (cheap, no extra model call).
+    if (!conv.title) {
+      const title = message.length > 48 ? `${message.slice(0, 48).trimEnd()}…` : message;
+      await db.update(conversations).set({ title }).where(eq(conversations.id, conv.id));
+    }
 
     const history = pruneInventoryResults([...prior, userMessage]);
     const system = buildSystemPrompt(await equipmentSummary(userId));

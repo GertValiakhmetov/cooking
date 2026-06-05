@@ -5,6 +5,7 @@
   import { BookOpen, MessageCircle, Moon, Refrigerator, SquarePen, Sun } from "lucide-svelte";
   import { type Conversation, api } from "$lib/api";
   import { auth } from "$lib/auth.svelte";
+  import { conversations } from "$lib/conversations.svelte";
   import { theme } from "$lib/theme.svelte";
   import { modeForWidth, ui } from "$lib/ui.svelte";
 
@@ -52,24 +53,13 @@
     }
   });
 
-  // Диалоги для сайдбара/дровера.
-  let convs = $state<Conversation[]>([]);
+  // Диалоги для сайдбара — общий стор (страница чата обновляет его после отправки).
   $effect(() => {
-    if (!auth.token) {
-      convs = [];
-      return;
-    }
-    api.conversations
-      .list()
-      .then((r) => {
-        convs = r.conversations;
-      })
-      .catch(() => {});
+    if (auth.token) void conversations.reload();
   });
 
   async function newChat() {
-    const c = await api.conversations.create();
-    convs = [c, ...convs];
+    const c = await conversations.create();
     await goto(`/chat?c=${c.id}`);
   }
 
@@ -116,7 +106,7 @@
             </button>
           </div>
           <div class="conv-list">
-            {#each convs as c (c.id)}
+            {#each conversations.list as c (c.id)}
               <a
                 href={`/chat?c=${c.id}`}
                 class="conv"
