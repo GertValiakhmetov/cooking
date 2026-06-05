@@ -2050,7 +2050,9 @@ body {
   margin-top: calc(-1 * var(--space-2));
 }
 .cook-text {
-  font-weight: var(--text-cooking-weight);
+  /* Не дисплейный semibold: крупный кегль читается и так, а 600 на 34px кричит
+     и прячет полужирные количества (.qty-em). Один вес для всех ярусов. */
+  font-weight: var(--weight-medium);
   font-size: 34px;
   line-height: 42px;
   letter-spacing: -0.01em;
@@ -2066,7 +2068,6 @@ body {
 .cook-text.cook-text--m {
   font-size: 24px;
   line-height: 32px;
-  font-weight: var(--weight-medium);
 }
 .cook-text.cook-text--l {
   font-size: 20px;
