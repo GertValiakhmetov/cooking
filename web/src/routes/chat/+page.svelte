@@ -134,7 +134,10 @@
   function autoresize(): void {
     if (!taEl) return;
     taEl.style.height = "auto";
-    taEl.style.height = `${Math.min(taEl.scrollHeight, 120)}px`;
+    // scrollHeight = content + padding (no border); with box-sizing: border-box the
+    // height must include the border too, or a single line gets clipped and scrolls.
+    const border = taEl.offsetHeight - taEl.clientHeight;
+    taEl.style.height = `${Math.min(taEl.scrollHeight + border, 120)}px`;
   }
 
   async function copy(text: string): Promise<void> {

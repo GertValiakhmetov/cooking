@@ -1240,7 +1240,8 @@ body {
   border: 1.5px solid var(--border-strong);
   background: var(--surface-sunken);
   border-radius: var(--radius-xl);
-  padding: 12px var(--space-4);
+  /* 10px keeps a single 24px line inside the 48px min-height (border-box: 48 − 3 border − 20 = 25 ≥ 24) */
+  padding: 10px var(--space-4);
   font-family: var(--font-sans);
   font-size: 17px;
   line-height: 24px;
@@ -1248,6 +1249,12 @@ body {
   outline: none;
   max-height: 120px;
   min-height: 48px;
+  /* never show the scrollbar; the textarea keeps the caret in view on its own */
+  overflow-y: hidden;
+  scrollbar-width: none;
+}
+.chatbar textarea::-webkit-scrollbar {
+  display: none;
 }
 .chatbar textarea:focus {
   border-color: var(--accent);
