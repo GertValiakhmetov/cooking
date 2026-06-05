@@ -28,6 +28,9 @@
   const SUPPRESSED = new Set(["present_recipe", "save_recipe"]);
 
   let feed = $state<Entry[]>([]);
+  // True while a switched-to conversation's history is being fetched; keeps the
+  // "Чем могу помочь?" stub from flashing before the messages arrive.
+  let loadingHistory = $state(false);
   let draft = $state("");
   let busy = $state(false);
   let following = $state(true);
@@ -96,10 +99,13 @@
   async function loadHistory(id: string): Promise<void> {
     try {
       const { messages } = await api.conversations.messages(id);
+      if (convId !== id) return; // stale response — the user switched again mid-flight
       feed = buildFeed(messages);
       scrollDown();
     } catch {
       /* transient — leave feed as-is */
+    } finally {
+      if (convId === id) loadingHistory = false;
     }
   }
 
@@ -109,6 +115,7 @@
     if (id === lastLoadedId) return;
     lastLoadedId = id;
     feed = [];
+    loadingHistory = id != null;
     if (id) void loadHistory(id);
   });
 
@@ -252,7 +259,7 @@
   {/if}
 
   <div class="chat-scroll" bind:this={scrollEl} onscroll={onScroll}>
-    {#if feed.length === 0}
+    {#if feed.length === 0 && !loadingHistory}
       <div class="stub" style="padding-top: var(--space-12)">
         <div class="stub-ic"><ChefHat size={30} /></div>
         <div class="stub-title">Чем могу помочь?</div>
