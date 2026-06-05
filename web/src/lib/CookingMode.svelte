@@ -23,6 +23,8 @@
   let ingOpen = $state(false);
   let confirm = $state(false);
   let awake = $state(false);
+  // Finish screen («Приятного аппетита!») shown after the last step, before ondone().
+  let finished = $state(false);
 
   type TimerState = { total: number; left: number; running: boolean; done: boolean };
   const timers = $state<Record<number, TimerState>>(
@@ -74,6 +76,19 @@
         if (e.key === "Escape") confirm = false;
         return;
       }
+      if (finished) {
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          finished = false;
+        } else if (e.key === "ArrowRight" || e.key === "Enter") {
+          e.preventDefault();
+          ondone();
+        } else if (e.key === "Escape") {
+          e.preventDefault();
+          attemptClose();
+        }
+        return;
+      }
       if (e.key === "ArrowRight") {
         e.preventDefault();
         next();
@@ -122,7 +137,7 @@
     idx = Math.max(0, Math.min(last, idx + delta));
   }
   function next(): void {
-    if (idx === last) ondone();
+    if (idx === last) finished = true;
     else go(1);
   }
   function attemptClose(): void {
@@ -181,57 +196,76 @@
       </div>
     {/if}
 
-    <div class="cook-body">
-      <button class="cook-tap left" aria-label="Предыдущий шаг" disabled={idx === 0} onclick={() => go(-1)}></button>
-      <button class="cook-tap right" aria-label="Следующий шаг" onclick={next}></button>
-
-      <div class="cook-content">
-        <div class="cook-stepnum">Шаг {idx + 1}</div>
-        {#if steps[idx].title}<div class="cook-steptitle">{steps[idx].title}</div>{/if}
-        <div class="cook-text">{steps[idx].content}</div>
-
-        {#if timers[idx]}
-          {@const t = timers[idx]}
-          <button
-            class="cook-timer"
-            class:cook-timer--running={t.running}
-            class:cook-timer--alarm={t.done}
-            onclick={toggleTimer}
-          >
-            {#if t.done}<BellRing size={26} />{:else if t.running}<Pause size={26} />{:else}<Timer size={26} />{/if}
-            <span class="time">{t.done ? "Готово" : clock(t.left)}</span>
-            <span class="t-hint">
-              {t.done ? "Нажми, чтобы сбросить" : t.running ? "Идёт" : t.left === t.total ? "Запустить" : "Продолжить"}
-            </span>
-          </button>
-        {/if}
-      </div>
-    </div>
-
-    <div class="cook-ing" data-open={ingOpen}>
-      <button class="cook-ing-handle" aria-expanded={ingOpen} onclick={() => (ingOpen = !ingOpen)}>
-        <span class="cook-ing-grip"></span>
-        <span class="cook-ing-label">Ингредиенты<span class="cook-ing-chev"><ChevronUp size={16} /></span></span>
-      </button>
-      <div class="cook-ing-list">
-        <div class="cook-ing-inner">
-          {#each recipe.ingredients as ing (ing.name)}
-            <div class="ing">{ing.name}<span class="qty">{ingQty(ing.amount, ing.unit)}</span></div>
-          {/each}
+    {#if finished}
+      <div class="cook-body cook-body--finish">
+        <div class="cook-finish">
+          <img class="cook-finish-gif" src="/img/bon-appetit.gif" alt="" />
+          <div class="cook-finish-title">Приятного аппетита!</div>
+          <div class="cook-finish-sub">{recipe.title} — готово</div>
         </div>
       </div>
-    </div>
 
-    <div class="cook-nav">
-      <button class="btn btn--secondary" disabled={idx === 0} onclick={() => go(-1)}>
-        <ArrowLeft size={20} />Назад
-      </button>
-      {#if idx === last}
-        <button class="btn btn--primary btn--done" onclick={ondone}><PartyPopper size={20} />Готово</button>
-      {:else}
-        <button class="btn btn--primary" onclick={next}>Дальше<ArrowRight size={20} /></button>
-      {/if}
-    </div>
+      <div class="cook-nav">
+        <button class="btn btn--secondary" onclick={() => (finished = false)}>
+          <ArrowLeft size={20} />К шагам
+        </button>
+        <button class="btn btn--primary btn--done" onclick={ondone}>
+          <PartyPopper size={20} />Завершить
+        </button>
+      </div>
+    {:else}
+      <div class="cook-body">
+        <button class="cook-tap left" aria-label="Предыдущий шаг" disabled={idx === 0} onclick={() => go(-1)}></button>
+        <button class="cook-tap right" aria-label="Следующий шаг" onclick={next}></button>
+
+        <div class="cook-content">
+          <div class="cook-stepnum">Шаг {idx + 1}</div>
+          {#if steps[idx].title}<div class="cook-steptitle">{steps[idx].title}</div>{/if}
+          <div class="cook-text">{steps[idx].content}</div>
+
+          {#if timers[idx]}
+            {@const t = timers[idx]}
+            <button
+              class="cook-timer"
+              class:cook-timer--running={t.running}
+              class:cook-timer--alarm={t.done}
+              onclick={toggleTimer}
+            >
+              {#if t.done}<BellRing size={26} />{:else if t.running}<Pause size={26} />{:else}<Timer size={26} />{/if}
+              <span class="time">{t.done ? "Готово" : clock(t.left)}</span>
+              <span class="t-hint">
+                {t.done ? "Нажми, чтобы сбросить" : t.running ? "Идёт" : t.left === t.total ? "Запустить" : "Продолжить"}
+              </span>
+            </button>
+          {/if}
+        </div>
+      </div>
+
+      <div class="cook-ing" data-open={ingOpen}>
+        <button class="cook-ing-handle" aria-expanded={ingOpen} onclick={() => (ingOpen = !ingOpen)}>
+          <span class="cook-ing-grip"></span>
+          <span class="cook-ing-label">Ингредиенты<span class="cook-ing-chev"><ChevronUp size={16} /></span></span>
+        </button>
+        <div class="cook-ing-list">
+          <div class="cook-ing-inner">
+            {#each recipe.ingredients as ing (ing.name)}
+              <div class="ing">{ing.name}<span class="qty">{ingQty(ing.amount, ing.unit)}</span></div>
+            {/each}
+          </div>
+        </div>
+      </div>
+
+      <div class="cook-nav">
+        <button class="btn btn--secondary" disabled={idx === 0} onclick={() => go(-1)}>
+          <ArrowLeft size={20} />Назад
+        </button>
+        {#if idx === last}
+          <button class="btn btn--primary btn--done" onclick={next}><PartyPopper size={20} />Готово</button>
+        {:else}
+          <button class="btn btn--primary" onclick={next}>Дальше<ArrowRight size={20} /></button>
+        {/if}
+      </div>
+    {/if}
 
     {#if confirm}
       <!-- dismiss via «Остаться» or Esc (handled by the window keydown effect) -->

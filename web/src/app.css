@@ -1627,6 +1627,10 @@ body {
   align-items: center;
   justify-content: center;
 }
+.stub-gif {
+  width: 140px;
+  height: 140px;
+}
 .stub-title {
   font-size: 18px;
   font-weight: var(--weight-semibold);
@@ -1844,6 +1848,29 @@ body {
   position: relative;
   text-align: left;
   overflow-y: auto;
+}
+.cook-body--finish {
+  align-items: center;
+  text-align: center;
+}
+.cook-finish {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+.cook-finish-gif {
+  width: 200px;
+  height: 200px;
+}
+.cook-finish-title {
+  font: var(--text-title-weight) 26px / 32px var(--font-sans);
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+}
+.cook-finish-sub {
+  font-size: 15px;
+  color: var(--text-secondary);
 }
 .cook-tap {
   position: absolute;

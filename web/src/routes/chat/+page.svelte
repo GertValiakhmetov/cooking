@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { page } from "$app/state";
-  import { ArrowDown, ArrowUp, Check, ChefHat, Copy, Menu, Moon, Sun } from "lucide-svelte";
+  import { ArrowDown, ArrowUp, Check, Copy, Menu, Moon, Sun } from "lucide-svelte";
   import { type StoredMessage, api } from "$lib/api";
   import { streamChat } from "$lib/chat-stream";
   import { conversations } from "$lib/conversations.svelte";
@@ -266,7 +266,7 @@
   <div class="chat-scroll" bind:this={scrollEl} onscroll={onScroll}>
     {#if feed.length === 0 && !loadingHistory}
       <div class="stub" style="padding-top: var(--space-12)">
-        <div class="stub-ic"><ChefHat size={30} /></div>
+        <img class="stub-gif" src="/img/chef-cooking.gif" alt="" />
         <div class="stub-title">Чем могу помочь?</div>
         <div class="stub-sub">Спроси, что приготовить из того, что есть — я загляну в твою кладовку.</div>
       </div>
@@ -343,13 +343,6 @@
   {/if}
 
   {#if cooking}
-    <CookingMode
-      recipe={cooking}
-      onclose={() => (cooking = null)}
-      ondone={() => {
-        cooking = null;
-        toast("Готово! Приятного аппетита");
-      }}
-    />
+    <CookingMode recipe={cooking} onclose={() => (cooking = null)} ondone={() => (cooking = null)} />
   {/if}
 </div>

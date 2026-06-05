@@ -134,11 +134,7 @@
   {/if}
 
   {#if cooking}
-    <CookingMode
-      recipe={cooking}
-      onclose={() => (cooking = null)}
-      ondone={() => { cooking = null; toast("Готово! Приятного аппетита"); }}
-    />
+    <CookingMode recipe={cooking} onclose={() => (cooking = null)} ondone={() => (cooking = null)} />
   {/if}
 
   {#if toasts.length > 0}
