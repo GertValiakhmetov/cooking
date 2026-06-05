@@ -2,7 +2,7 @@
   import "../app.css";
   import { goto } from "$app/navigation";
   import { page } from "$app/state";
-  import { BookOpen, MessageCircle, Moon, Pencil, Refrigerator, Sun, Trash2 } from "lucide-svelte";
+  import { BookOpen, MessageCircle, Moon, Pencil, Refrigerator, Sun, Trash2, X } from "lucide-svelte";
   import { type Conversation, api } from "$lib/api";
   import { auth } from "$lib/auth.svelte";
   import { conversations } from "$lib/conversations.svelte";
@@ -86,6 +86,29 @@
     await conversations.remove(c.id).catch(() => {});
     if (wasActive) await goto("/chat");
   }
+
+  // ---- mobile conversations drawer ----
+  function selectConv(id: string) {
+    ui.drawerOpen = false;
+    void goto(`/chat?c=${id}`);
+  }
+  function fmtTime(iso: string): string {
+    const d = new Date(iso);
+    const now = new Date();
+    if (d.toDateString() === now.toDateString()) {
+      return d.toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+    }
+    const yest = new Date(now);
+    yest.setDate(now.getDate() - 1);
+    if (d.toDateString() === yest.toDateString()) return "вчера";
+    return d.toLocaleDateString("ru-RU", { day: "2-digit", month: "2-digit" });
+  }
+  // Close the drawer on any navigation.
+  $effect(() => {
+    void page.url.pathname;
+    void page.url.search;
+    ui.drawerOpen = false;
+  });
 </script>
 
 <div class="app app--{ui.mode}">
@@ -212,5 +235,44 @@
         </nav>
       {/if}
     </div>
+
+    {#if ui.mode === "mobile" && isActiveTab("/chat")}
+      <!-- mobile conversations drawer (burger lives in the chat header) -->
+      <div
+        class="scrim"
+        class:open={ui.drawerOpen}
+        role="presentation"
+        onclick={() => (ui.drawerOpen = false)}
+      ></div>
+      <aside class="drawer" class:open={ui.drawerOpen}>
+        <div class="drawer-head">
+          <span class="brand-mark">С</span>
+          <span class="brand-name">Су-шеф</span>
+          <button class="icon-btn" aria-label="Закрыть" onclick={() => (ui.drawerOpen = false)}>
+            <X size={22} />
+          </button>
+        </div>
+        <div class="drawer-section">Чаты</div>
+        <div class="drawer-list">
+          {#if conversations.list.length === 0}
+            <div class="empty" style="padding: var(--space-8) var(--space-4)">
+              <div class="empty-text">Пока нет диалогов. Напиши сообщение в чате.</div>
+            </div>
+          {:else}
+            {#each conversations.list as c (c.id)}
+              <button
+                class="conv-rich"
+                class:active={activeConvId === c.id}
+                onclick={() => selectConv(c.id)}
+              >
+                <span class="conv-ic"><MessageCircle size={18} /></span>
+                <span class="conv-body"><span class="conv-title">{convTitle(c)}</span></span>
+                <span class="conv-time">{fmtTime(c.updatedAt)}</span>
+              </button>
+            {/each}
+          {/if}
+        </div>
+      </aside>
+    {/if}
   {/if}
 </div>

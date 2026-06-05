@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { page } from "$app/state";
-  import { ArrowDown, ArrowUp, Check, ChefHat, Copy, Moon, Sun } from "lucide-svelte";
+  import { ArrowDown, ArrowUp, Check, ChefHat, Copy, Menu, Moon, Sun } from "lucide-svelte";
   import { type StoredMessage, api } from "$lib/api";
   import { streamChat } from "$lib/chat-stream";
   import { conversations } from "$lib/conversations.svelte";
@@ -228,7 +228,8 @@
 <div class="screen">
   {#if ui.mode === "mobile"}
     <header class="topbar">
-      <div class="topbar-title" style="padding-left: var(--space-3)">
+      <button class="icon-btn" aria-label="Чаты" onclick={() => (ui.drawerOpen = true)}><Menu size={24} /></button>
+      <div class="topbar-title">
         <span class="tt-eyebrow">Су-шеф</span>
         <span class="tt-name">{title}</span>
       </div>
