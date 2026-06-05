@@ -5,6 +5,7 @@
   import { type StoredMessage, api } from "$lib/api";
   import { streamChat } from "$lib/chat-stream";
   import { conversations } from "$lib/conversations.svelte";
+  import CookingMode from "$lib/CookingMode.svelte";
   import RecipeCard from "$lib/RecipeCard.svelte";
   import { asRecipe, type Recipe } from "$lib/recipe";
   import { theme } from "$lib/theme.svelte";
@@ -32,6 +33,7 @@
   let following = $state(true);
   let showPill = $state(false);
   let toasts = $state<{ id: number; text: string }[]>([]);
+  let cooking = $state<Recipe | null>(null);
 
   let scrollEl: HTMLDivElement | undefined;
   let taEl: HTMLTextAreaElement | undefined;
@@ -278,7 +280,7 @@
               recipe={entry.recipe}
               saved={entry.saved}
               onsave={() => saveRecipe(entry)}
-              oncook={() => toast("Режим готовки скоро — делаем дальше")}
+              oncook={() => (cooking = entry.recipe)}
             />
           {/if}
         {/each}
@@ -317,5 +319,16 @@
         <div class="toast"><span>{t.text}</span></div>
       {/each}
     </div>
+  {/if}
+
+  {#if cooking}
+    <CookingMode
+      recipe={cooking}
+      onclose={() => (cooking = null)}
+      ondone={() => {
+        cooking = null;
+        toast("Готово! Приятного аппетита");
+      }}
+    />
   {/if}
 </div>
