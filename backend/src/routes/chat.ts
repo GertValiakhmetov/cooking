@@ -7,6 +7,7 @@ import { createAnthropicModel } from "../ai/anthropic";
 import { runChat } from "../ai/chat";
 import { pruneInventoryResults } from "../ai/replay";
 import { buildSystemPrompt } from "../ai/system-prompt";
+import { generateConversationTitle } from "../ai/title";
 import { tools } from "../ai/tools";
 import type { ConversationMessage } from "../ai/types";
 import { type AuthVars, requireUser } from "../auth/middleware";
@@ -214,11 +215,16 @@ chatRoutes.post(
     };
     await persistMessage(conv.id, userMessage);
 
-    // Auto-title a fresh conversation from its first message (cheap, no extra model call).
-    if (!conv.title) {
-      const title = message.length > 48 ? `${message.slice(0, 48).trimEnd()}…` : message;
-      await db.update(conversations).set({ title }).where(eq(conversations.id, conv.id));
-    }
+    // Auto-title a fresh conversation from its first message via the cheap model (haiku).
+    // Kicked off here so it runs concurrently with the chat stream, and awaited before
+    // the stream closes — the client reloads its conversation list right after.
+    const titling = conv.title
+      ? null
+      : generateConversationTitle(message)
+          .then((title) =>
+            db.update(conversations).set({ title }).where(eq(conversations.id, conv.id)),
+          )
+          .catch(() => {});
 
     const history = pruneInventoryResults([...prior, userMessage]);
     const system = buildSystemPrompt(await equipmentSummary(userId));
@@ -241,6 +247,7 @@ chatRoutes.post(
           data: JSON.stringify({ type: "error", message: (err as Error).message }),
         });
       }
+      await titling;
       await db
         .update(conversations)
         .set({ updatedAt: new Date() })
