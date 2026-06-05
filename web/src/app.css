@@ -2062,6 +2062,33 @@ body {
   font-size: var(--text-cooking-size);
   line-height: var(--text-cooking-line);
 }
+/* Ярусы по длине шага: дисплейный кегль — только для коротких команд. */
+.cook-text.cook-text--m {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: var(--weight-medium);
+}
+.cook-text.cook-text--l {
+  font-size: 20px;
+  line-height: 29px;
+  font-weight: var(--weight-regular);
+  letter-spacing: 0;
+  text-wrap: pretty;
+}
+.app--rail .cook-text.cook-text--m,
+.app--desktop .cook-text.cook-text--m {
+  font-size: 28px;
+  line-height: 38px;
+}
+.app--rail .cook-text.cook-text--l,
+.app--desktop .cook-text.cook-text--l {
+  font-size: 22px;
+  line-height: 32px;
+}
+/* Количества из {{…}}-маркеров — опора для глаза в плотном тексте. */
+.qty-em {
+  font-weight: var(--weight-semibold);
+}
 
 .cook-timer {
   align-self: flex-start;

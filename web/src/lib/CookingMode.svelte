@@ -11,7 +11,7 @@
     Timer,
     X,
   } from "lucide-svelte";
-  import { hasScalableSteps, portionsWord, type Recipe, scaleAmount, scaleStepText } from "./recipe";
+  import { hasScalableSteps, portionsWord, type Recipe, scaleAmount, scaleStepSegments } from "./recipe";
 
   let {
     recipe,
@@ -58,6 +58,13 @@
 
   function clock(s: number): string {
     return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+  }
+
+  // Дисплейный кегль рассчитан на короткие команды; плотные многосоставные шаги
+  // читаются легче меньшим размером и обычным начертанием.
+  function textTier(content: string): string {
+    if (content.length <= 90) return "";
+    return content.length <= 200 ? "cook-text--m" : "cook-text--l";
   }
 
   // One ticking loop drives every running timer (they keep running across steps).
@@ -229,7 +236,9 @@
         <div class="cook-content">
           <div class="cook-stepnum">Шаг {idx + 1}</div>
           {#if steps[idx].title}<div class="cook-steptitle">{steps[idx].title}</div>{/if}
-          <div class="cook-text">{scaleStepText(steps[idx].content, ratio)}</div>
+          <div class="cook-text {textTier(steps[idx].content)}">
+            {#each scaleStepSegments(steps[idx].content, ratio) as seg, si (si)}{#if seg.qty}<span class="qty-em">{seg.text}</span>{:else}{seg.text}{/if}{/each}
+          </div>
 
           {#if timers[idx]}
             {@const t = timers[idx]}

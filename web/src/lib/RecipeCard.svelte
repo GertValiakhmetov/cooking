@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Bookmark, ChefHat, Check, Clock, Pause, Timer, Trash2, Users, X } from "lucide-svelte";
-  import { hasScalableSteps, portionsWord, type Recipe, scaleAmount, scaleStepText } from "./recipe";
+  import { hasScalableSteps, portionsWord, type Recipe, scaleAmount, scaleStepSegments } from "./recipe";
 
   let {
     recipe,
@@ -120,7 +120,7 @@
             <div class="step-main">
               <div class="step-text">
                 {#if step.title}<div class="step-title">{step.title}</div>{/if}
-                {scaleStepText(step.content, ratio)}
+                {#each scaleStepSegments(step.content, ratio) as seg, si (si)}{#if seg.qty}<span class="qty-em">{seg.text}</span>{:else}{seg.text}{/if}{/each}
               </div>
               {#if step.timerSeconds}
                 <button

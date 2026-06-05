@@ -34,14 +34,29 @@ export function scaleAmount(amount: number | null, unit: string | null, ratio: n
 /** {{300 г}} markers in step text — mirrors the backend recipeStepSchema contract. */
 const QUANTITY_MARKER = /\{\{([^{}]*)\}\}/g;
 
-/** Replace {{N unit}} markers with amounts scaled by `ratio`; everything else stays literal. */
-export function scaleStepText(content: string, ratio: number): string {
-  return content.replace(QUANTITY_MARKER, (_, body: string) => {
-    const m = /^(\d+(?:[.,]\d+)?)\s*(.*)$/.exec(body.trim());
-    if (!m) return body.trim(); // не парсится — показываем без скобок, не врём числом
-    const amount = Number(m[1].replace(",", "."));
-    return scaleAmount(amount, m[2] || null, ratio);
-  });
+export type StepSegment = { text: string; qty: boolean };
+
+/**
+ * Split step content into plain-text and quantity segments, scaling {{…}} markers
+ * by `ratio`. Quantity segments get emphasised in the UI so amounts are scannable.
+ */
+export function scaleStepSegments(content: string, ratio: number): StepSegment[] {
+  const out: StepSegment[] = [];
+  let lastIndex = 0;
+  for (const m of content.matchAll(QUANTITY_MARKER)) {
+    if (m.index > lastIndex) out.push({ text: content.slice(lastIndex, m.index), qty: false });
+    const parsed = /^(\d+(?:[.,]\d+)?)\s*(.*)$/.exec(m[1].trim());
+    if (parsed) {
+      const amount = Number(parsed[1].replace(",", "."));
+      out.push({ text: scaleAmount(amount, parsed[2] || null, ratio), qty: true });
+    } else {
+      // не парсится — показываем без скобок, не врём числом
+      out.push({ text: m[1].trim(), qty: false });
+    }
+    lastIndex = m.index + m[0].length;
+  }
+  if (lastIndex < content.length) out.push({ text: content.slice(lastIndex), qty: false });
+  return out;
 }
 
 /** True if any step carries scalable {{…}} markers (старые рецепты их не имеют). */
