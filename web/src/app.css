@@ -392,7 +392,8 @@ body {
   color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
 }
 .conv-rich.active .conv-title {
   color: var(--accent);
@@ -404,7 +405,8 @@ body {
   margin-top: 1px;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 24px), transparent);
 }
 .conv-rich .conv-time {
   font-size: 12px;
@@ -501,6 +503,7 @@ body {
   gap: 2px;
 }
 .conv {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -538,17 +541,32 @@ body {
   color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  /* Текст тянется до края строки и гаснет градиентом — как в Claude desktop. */
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+  mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+}
+/* На ховере справа всплывают действия — гасим текст раньше, чтобы он не лез под кнопки. */
+.conv:hover .conv-title,
+.conv:focus-within .conv-title {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    #000 calc(100% - 92px),
+    transparent calc(100% - 62px)
+  );
+  mask-image: linear-gradient(to right, #000 calc(100% - 92px), transparent calc(100% - 62px));
 }
 .conv.active .conv-title {
   color: var(--accent);
 }
 .conv-actions {
+  position: absolute;
+  right: var(--space-2);
+  top: 50%;
+  translate: 0 -50%;
   display: flex;
   gap: 2px;
   opacity: 0;
   transition: opacity var(--duration-fast) var(--ease-standard);
-  flex: 0 0 auto;
 }
 .conv:hover .conv-actions,
 .conv:focus-within .conv-actions {
