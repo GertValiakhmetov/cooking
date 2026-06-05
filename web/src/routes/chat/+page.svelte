@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { page } from "$app/state";
-  import { ArrowDown, ArrowUp, Check, ChefHat, Copy, Moon, SquarePen, Sun } from "lucide-svelte";
+  import { ArrowDown, ArrowUp, Check, ChefHat, Copy, Moon, Sun } from "lucide-svelte";
   import { type StoredMessage, api } from "$lib/api";
   import { streamChat } from "$lib/chat-stream";
   import { conversations } from "$lib/conversations.svelte";
@@ -157,11 +157,6 @@
     }
   }
 
-  async function newChat(): Promise<void> {
-    const c = await conversations.create();
-    await goto(`/chat?c=${c.id}`);
-  }
-
   async function send(): Promise<void> {
     const text = draft.trim();
     if (!text || busy) return;
@@ -233,8 +228,7 @@
 <div class="screen">
   {#if ui.mode === "mobile"}
     <header class="topbar">
-      <button class="icon-btn" title="Новый чат" onclick={newChat}><SquarePen size={22} /></button>
-      <div class="topbar-title">
+      <div class="topbar-title" style="padding-left: var(--space-3)">
         <span class="tt-eyebrow">Су-шеф</span>
         <span class="tt-name">{title}</span>
       </div>

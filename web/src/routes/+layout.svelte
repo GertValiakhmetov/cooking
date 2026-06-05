@@ -1,8 +1,7 @@
 <script lang="ts">
   import "../app.css";
-  import { goto } from "$app/navigation";
   import { page } from "$app/state";
-  import { BookOpen, MessageCircle, Moon, Refrigerator, SquarePen, Sun } from "lucide-svelte";
+  import { BookOpen, MessageCircle, Moon, Refrigerator, Sun } from "lucide-svelte";
   import { type Conversation, api } from "$lib/api";
   import { auth } from "$lib/auth.svelte";
   import { conversations } from "$lib/conversations.svelte";
@@ -58,11 +57,6 @@
     if (auth.token) void conversations.reload();
   });
 
-  async function newChat() {
-    const c = await conversations.create();
-    await goto(`/chat?c=${c.id}`);
-  }
-
   const onRedeem = $derived(page.url.pathname.startsWith("/redeem"));
   const onOnboarding = $derived(page.url.pathname.startsWith("/onboarding"));
   const activeConvId = $derived(page.url.searchParams.get("c"));
@@ -107,9 +101,6 @@
         <div class="sidebar-convs">
           <div class="sidebar-convs-head">
             <span>Чаты</span>
-            <button class="icon-btn sm" title="Новый чат" onclick={newChat}>
-              <SquarePen size={18} />
-            </button>
           </div>
           <div class="conv-list">
             {#each conversations.list as c (c.id)}
@@ -134,9 +125,6 @@
     {:else if ui.mode === "rail"}
       <aside class="rail">
         <span class="brand-mark">С</span>
-        <button class="rail-new" title="Новый чат" onclick={newChat}>
-          <SquarePen size={22} />
-        </button>
         <nav class="rail-nav">
           {#each tabs as tab (tab.href)}
             {@const TabIcon = tab.icon}

@@ -2,7 +2,6 @@
   import { goto } from "$app/navigation";
   import { ArrowLeft, ArrowRight, Check, MessageCircle, Moon, Pencil, Plus, Sun, X } from "lucide-svelte";
   import { api } from "$lib/api";
-  import { conversations } from "$lib/conversations.svelte";
   import { theme } from "$lib/theme.svelte";
 
   // Redeem (step 1, with the «Как тебя зовут?» field + error views) lives on /redeem.
@@ -56,8 +55,8 @@
       return;
     }
     if (path === "chat") {
-      const c = await conversations.create();
-      await goto(`/chat?c=${c.id}&seed=pantry`);
+      // Lazy: the conversation is created only when the user actually sends.
+      await goto("/chat?seed=pantry");
       return;
     }
     await goto("/chat"); // skip
