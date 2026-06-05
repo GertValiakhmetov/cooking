@@ -4,14 +4,18 @@ import { auth } from "./auth.svelte";
 /** Shared conversation list — the sidebar/rail render it, the chat page mutates it. */
 class ConversationsStore {
   list = $state<Conversation[]>([]);
+  /** False until the first successful reload() — before that the list is unknown, not empty. */
+  loaded = $state(false);
 
   async reload(): Promise<void> {
     if (!auth.token) {
       this.list = [];
+      this.loaded = false;
       return;
     }
     try {
       this.list = (await api.conversations.list()).conversations;
+      this.loaded = true;
     } catch {
       /* keep stale list on transient errors */
     }

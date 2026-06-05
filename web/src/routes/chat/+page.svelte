@@ -58,7 +58,12 @@
 
   const convId = $derived(page.url.searchParams.get("c"));
   const conv = $derived(conversations.list.find((c) => c.id === convId));
-  const title = $derived(conv?.title ?? "Новый чат");
+  const title = $derived.by(() => {
+    if (conv) return conv.title ?? "Новый чат";
+    // An id is in the URL but the conversation list hasn't loaded yet — keep the
+    // header blank instead of flashing «Новый чат» before the real title arrives.
+    return convId && !conversations.loaded ? "" : "Новый чат";
+  });
 
   function push<T extends Entry>(e: T): T {
     feed.push(e);
