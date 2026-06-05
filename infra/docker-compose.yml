@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: cooking
     ports:
-      - "5432:5432"
+      - "5433:5432" # 5433 снаружи: 5432 занят рабочей базой
     volumes:
       - pgdata:/var/lib/postgresql/data # named volume — survives redeploys (§10)
     healthcheck:

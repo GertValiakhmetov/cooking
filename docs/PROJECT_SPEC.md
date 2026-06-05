@@ -346,6 +346,7 @@ Recipes
 - **Assistant persona:** concise/practical — short answers, clear steps, at-the-stove friendly; elaborates on request. (decided)
 - **Brand & design system:** «Су-шеф»; tokens/components/UI kit live in `docs/design-system/` (Claude Design handoff, 2026-06-04). Web and Android implement its named semantic tokens — no ad-hoc values. (decided)
 - **Voice details:** assistant addresses the user as «ты»; UI chrome contains no emoji (per design guide), the assistant's chat text may use them sparingly. (decided)
+- **Claude Agent SDK rejected:** evaluated migrating off the Messages API (motivation: spending a Max-subscription agent-credit pool). Rejected — official guidance for app backends with custom DB tools is Messages API + tool use; subscription credits cover the owner's own agent usage, not multi-user apps (§7.1 stands); prod API cost is negligible at our scale. Subscription credits are spent on development tooling (Claude Code) instead. (decided)
 
 ---
 

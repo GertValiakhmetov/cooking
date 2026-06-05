@@ -11,7 +11,10 @@ import { type AuthVars, requireUser } from "./middleware";
 
 export const authRoutes = new Hono<{ Variables: AuthVars }>();
 
-const redeemSchema = z.object({ token: z.string().min(1) });
+const redeemSchema = z.object({
+  token: z.string().min(1),
+  displayName: z.string().min(1).max(80).optional(),
+});
 
 authRoutes.post(
   "/redeem",
@@ -32,7 +35,7 @@ authRoutes.post(
     const parsed = redeemSchema.safeParse(await c.req.json().catch(() => null));
     if (!parsed.success) return c.json({ error: "validation_error" }, 400);
     try {
-      const { userId } = await redeemInvite(parsed.data.token);
+      const { userId } = await redeemInvite(parsed.data.token, parsed.data.displayName);
       return c.json({ jwt: await signSession(userId) });
     } catch (err) {
       if (err instanceof InviteError) return c.json({ error: err.message }, 400);

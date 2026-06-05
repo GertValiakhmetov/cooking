@@ -26,8 +26,15 @@ export async function mintInvite(
   return token;
 }
 
-/** Redeem an invite: validate, create/find the user, mark used. Issuing the invite is the gate. */
-export async function redeemInvite(token: string): Promise<{ userId: string }> {
+/**
+ * Redeem an invite: validate, create/find the user, mark used. Issuing the invite is the gate.
+ * The onboarding redeem screen asks «Как тебя зовут?» — a provided displayName wins over
+ * the name set at mint time.
+ */
+export async function redeemInvite(
+  token: string,
+  displayName?: string,
+): Promise<{ userId: string }> {
   const tokenHash = hashToken(token);
   const [invite] = await db.select().from(invites).where(eq(invites.tokenHash, tokenHash)).limit(1);
   if (!invite) throw new InviteError("Недействительный инвайт-токен.");
@@ -35,16 +42,20 @@ export async function redeemInvite(token: string): Promise<{ userId: string }> {
   if (invite.expiresAt.getTime() < Date.now())
     throw new InviteError("Срок действия инвайта истёк.");
 
+  const providedName = displayName?.trim() || undefined;
+
   const existing = await db.select().from(users).where(eq(users.email, invite.email)).limit(1);
   let userId = existing[0]?.id;
   if (!userId) {
     const inserted = await db
       .insert(users)
-      .values({ email: invite.email, displayName: invite.displayName })
+      .values({ email: invite.email, displayName: providedName ?? invite.displayName })
       .returning({ id: users.id });
     const row = inserted[0];
     if (!row) throw new InviteError("Не удалось создать пользователя.");
     userId = row.id;
+  } else if (providedName) {
+    await db.update(users).set({ displayName: providedName }).where(eq(users.id, userId));
   }
 
   await db

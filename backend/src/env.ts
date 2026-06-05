@@ -9,7 +9,7 @@ const schema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   PORT: z.coerce.number().int().positive().default(8080),
 
-  DATABASE_URL: z.string().default("postgres://postgres:postgres@localhost:5432/cooking"),
+  DATABASE_URL: z.string().default("postgres://postgres:postgres@localhost:5433/cooking"),
 
   JWT_SECRET: z.string().min(16).default("dev-only-secret-change-me-0123456789abcdef"),
   JWT_TTL: z.string().default("30d"),

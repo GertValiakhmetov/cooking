@@ -3,7 +3,7 @@
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!**/*.svelte", "!docs/design-system"]
+    "includes": ["**", "!**/*.svelte", "!docs/design-system", "!docs/design-screens"]
   },
   "formatter": {
     "enabled": true,
