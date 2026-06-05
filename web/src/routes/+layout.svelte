@@ -1,7 +1,8 @@
 <script lang="ts">
   import "../app.css";
+  import { goto } from "$app/navigation";
   import { page } from "$app/state";
-  import { BookOpen, MessageCircle, Moon, Refrigerator, Sun } from "lucide-svelte";
+  import { BookOpen, MessageCircle, Moon, Pencil, Refrigerator, Sun, Trash2 } from "lucide-svelte";
   import { type Conversation, api } from "$lib/api";
   import { auth } from "$lib/auth.svelte";
   import { conversations } from "$lib/conversations.svelte";
@@ -62,6 +63,29 @@
   const activeConvId = $derived(page.url.searchParams.get("c"));
   const isActiveTab = (href: string) => page.url.pathname.startsWith(href);
   const convTitle = (c: Conversation) => c.title ?? "Новый чат";
+
+  // ---- sidebar conversation rename / delete ----
+  let editingId = $state<string | null>(null);
+  let editDraft = $state("");
+
+  function focusInput(node: HTMLInputElement) {
+    node.focus();
+    node.select();
+  }
+  function startRename(c: Conversation) {
+    editingId = c.id;
+    editDraft = c.title ?? "";
+  }
+  async function commitRename(c: Conversation) {
+    const v = editDraft.trim();
+    editingId = null;
+    if (v && v !== c.title) await conversations.rename(c.id, v).catch(() => {});
+  }
+  async function removeConv(c: Conversation) {
+    const wasActive = activeConvId === c.id;
+    await conversations.remove(c.id).catch(() => {});
+    if (wasActive) await goto("/chat");
+  }
 </script>
 
 <div class="app app--{ui.mode}">
@@ -104,14 +128,42 @@
           </div>
           <div class="conv-list">
             {#each conversations.list as c (c.id)}
-              <a
-                href={`/chat?c=${c.id}`}
-                class="conv"
-                class:active={isActiveTab("/chat") && activeConvId === c.id}
-              >
-                <span class="conv-ic"><MessageCircle size={18} /></span>
-                <span class="conv-title">{convTitle(c)}</span>
-              </a>
+              {#if editingId === c.id}
+                <div class="conv">
+                  <span class="conv-ic"><MessageCircle size={18} /></span>
+                  <!-- svelte-ignore a11y_no_static_element_interactions -->
+                  <input
+                    class="conv-edit"
+                    bind:value={editDraft}
+                    use:focusInput
+                    onkeydown={(e) => {
+                      if (e.key === "Enter") commitRename(c);
+                      else if (e.key === "Escape") editingId = null;
+                    }}
+                    onblur={() => commitRename(c)}
+                  />
+                </div>
+              {:else}
+                <div
+                  class="conv"
+                  class:active={isActiveTab("/chat") && activeConvId === c.id}
+                  role="button"
+                  tabindex="0"
+                  onclick={() => goto(`/chat?c=${c.id}`)}
+                  onkeydown={(e) => { if (e.key === "Enter") goto(`/chat?c=${c.id}`); }}
+                >
+                  <span class="conv-ic"><MessageCircle size={18} /></span>
+                  <span class="conv-title">{convTitle(c)}</span>
+                  <span class="conv-actions">
+                    <button class="conv-act" title="Переименовать" onclick={(e) => { e.stopPropagation(); startRename(c); }}>
+                      <Pencil size={15} />
+                    </button>
+                    <button class="conv-act danger" title="Удалить" onclick={(e) => { e.stopPropagation(); removeConv(c); }}>
+                      <Trash2 size={15} />
+                    </button>
+                  </span>
+                </div>
+              {/if}
             {/each}
           </div>
         </div>
