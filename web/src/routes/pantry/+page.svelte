@@ -12,6 +12,7 @@
     X,
   } from "lucide-svelte";
   import { type EquipmentItem, type InventoryItem, api } from "$lib/api";
+  import { onAppReturn } from "$lib/refetch";
 
   const CATEGORIES = ["Мясо", "Овощи", "Молочное", "Бакалея", "Специи", "Фрукты", "Заморозка", "Напитки", "Другое"];
   const UNITS = ["г", "кг", "мл", "л", "шт", "ст.л.", "ч.л.", "головка"];
@@ -37,7 +38,7 @@
     }, 3200);
   }
 
-  $effect(() => {
+  function load(): void {
     void api.inventory
       .list()
       .then((r) => (products = r.items))
@@ -48,6 +49,13 @@
       .then((r) => (appliances = r.items))
       .catch(() => {})
       .finally(() => (loadingAppliances = false));
+  }
+
+  // Initial load + refresh when the user comes back to the app — the assistant
+  // may have updated the pantry from chat in the meantime.
+  $effect(() => {
+    load();
+    return onAppReturn(load);
   });
 
   function num(q: string | null): number | null {

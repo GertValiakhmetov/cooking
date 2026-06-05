@@ -2,6 +2,7 @@
   import { goto } from "$app/navigation";
   import { AlertTriangle, ArrowLeft, Bookmark, Check, Clock, MessageCircle, Search, UtensilsCrossed, Users } from "lucide-svelte";
   import { type SavedRecipe, api } from "$lib/api";
+  import { onAppReturn } from "$lib/refetch";
   import CookingMode from "$lib/CookingMode.svelte";
   import RecipeCard from "$lib/RecipeCard.svelte";
   import type { Recipe } from "$lib/recipe";
@@ -25,7 +26,7 @@
     }, 3200);
   }
 
-  $effect(() => {
+  function load(): void {
     void api.recipes
       .list()
       .then(({ recipes: rs }) => {
@@ -41,6 +42,13 @@
       })
       .catch(() => {})
       .finally(() => (loading = false));
+  }
+
+  // Initial load + refresh when the user comes back to the app: the «Не хватает N»
+  // badges depend on the pantry, which the assistant can change from chat.
+  $effect(() => {
+    load();
+    return onAppReturn(load);
   });
 
   const ql = $derived(q.trim().toLowerCase());
