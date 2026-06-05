@@ -24,8 +24,9 @@
     update_inventory_item: ["Обновляю кладовку…", "Обновил кладовку"],
     remove_inventory_item: ["Убираю из кладовки…", "Убрал из кладовки"],
     get_equipment: ["Смотрю оборудование…", "Посмотрел оборудование"],
+    present_recipe: ["Составляю рецепт…", "Рецепт готов"],
+    save_recipe: ["Сохраняю рецепт…", "Сохранил рецепт"],
   };
-  const SUPPRESSED = new Set(["present_recipe", "save_recipe"]);
 
   let feed = $state<Entry[]>([]);
   // True while a switched-to conversation's history is being fetched; keeps the
@@ -221,7 +222,6 @@
           }
           assistant.text += ev.text;
         } else if (ev.type === "tool") {
-          if (SUPPRESSED.has(ev.name)) continue;
           if (ev.phase === "start") {
             closeTool();
             const [label, doneLabel] = TOOL_LABELS[ev.name] ?? ["Работаю…", "Готово"];

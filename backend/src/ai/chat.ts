@@ -39,6 +39,8 @@ export async function* runChat(
     const assistantContent: ContentBlock[] = [];
     let textBuffer = "";
     let stopReason = "end_turn";
+    // Tool starts already announced while their input streamed (same order as toolUses).
+    let announced = 0;
 
     for await (const ev of deps.model.streamTurn({
       system: deps.system,
@@ -48,6 +50,11 @@ export async function* runChat(
       if (ev.type === "text_delta") {
         textBuffer += ev.text;
         yield { type: "text", text: ev.text };
+      } else if (ev.type === "tool_pending") {
+        // Announce as soon as the model starts composing the call — building the
+        // input (e.g. a recipe's JSON) can take many seconds of otherwise-silence.
+        announced++;
+        yield { type: "tool", name: ev.name, phase: "start" };
       } else if (ev.type === "tool_use") {
         if (textBuffer) {
           assistantContent.push({ type: "text", text: textBuffer });
@@ -71,8 +78,9 @@ export async function* runChat(
     }
 
     const toolResults: ContentBlock[] = [];
-    for (const call of toolUses) {
-      yield { type: "tool", name: call.name, phase: "start" };
+    for (const [i, call] of toolUses.entries()) {
+      // Models without tool_pending support (tests) still get a start event here.
+      if (i >= announced) yield { type: "tool", name: call.name, phase: "start" };
       const spec = toolsByName.get(call.name);
       let result: ToolResult;
       if (!spec) {

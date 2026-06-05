@@ -44,6 +44,8 @@ export type ToolSpec = {
 /** Low-level model stream the chat loop consumes — decoupled from the SDK for testability. */
 export type ModelStreamEvent =
   | { type: "text_delta"; text: string }
+  /** The model began emitting a tool call — its input is still streaming. */
+  | { type: "tool_pending"; name: string }
   | { type: "tool_use"; id: string; name: string; input: unknown }
   | { type: "turn_end"; stopReason: string };
 

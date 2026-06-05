@@ -29,9 +29,12 @@ export function createAnthropicModel(model: string = env.ANTHROPIC_MODEL): ChatM
           })),
         });
 
-        // Live text tokens.
+        // Live text tokens + early tool announcements (the name is known the moment
+        // the block opens, long before its JSON input finishes streaming).
         for await (const event of stream) {
-          if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
+          if (event.type === "content_block_start" && event.content_block.type === "tool_use") {
+            yield { type: "tool_pending", name: event.content_block.name };
+          } else if (event.type === "content_block_delta" && event.delta.type === "text_delta") {
             yield { type: "text_delta", text: event.delta.text };
           }
         }

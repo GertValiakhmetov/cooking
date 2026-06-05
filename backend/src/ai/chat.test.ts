@@ -88,6 +88,38 @@ describe("runChat", () => {
     expect(persisted[2]?.role).toBe("assistant");
   });
 
+  it("announces a tool while its input is still streaming, without duplicating start", async () => {
+    const model = scriptedModel([
+      [
+        { type: "tool_pending", name: "present_recipe" },
+        { type: "tool_use", id: "t1", name: "present_recipe", input: validRecipe },
+        { type: "turn_end", stopReason: "tool_use" },
+      ],
+      [
+        { type: "text_delta", text: "Готово!" },
+        { type: "turn_end", stopReason: "end_turn" },
+      ],
+    ]);
+    const history: ConversationMessage[] = [
+      { role: "user", content: [{ type: "text", text: "омлет" }] },
+    ];
+    const events = await drain(
+      runChat(history, {
+        model,
+        tools: [presentRecipeTool],
+        toolContext: { userId: "u1" },
+        system: [],
+      }),
+    );
+    const toolEvents = events.filter((e) => e.type === "tool");
+    expect(toolEvents).toEqual([
+      { type: "tool", name: "present_recipe", phase: "start" },
+      { type: "tool", name: "present_recipe", phase: "end" },
+    ]);
+    // the early start precedes the recipe block
+    expect(events.map((e) => e.type)).toEqual(["tool", "recipe", "tool", "text", "done"]);
+  });
+
   it("returns a tool error (not a recipe) when present_recipe input is invalid", async () => {
     const model = scriptedModel([
       [
