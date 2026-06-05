@@ -7,7 +7,7 @@ import type { ToolSpec } from "../types";
 export const getInventoryTool: ToolSpec = {
   name: "get_inventory",
   description:
-    "Возвращает текущие ингредиенты пользователя (склад): название, количество, единицу, категорию, срок годности. Вызывай, когда нужно знать, что есть в наличии.",
+    "Возвращает текущие ингредиенты пользователя (склад): id, название, количество, единицу, категорию, срок годности. Вызывай, когда нужно знать, что есть в наличии; id используй для update/remove_inventory_item.",
   inputSchema: { type: "object", properties: {}, additionalProperties: false },
   handler: async (_input, ctx) => {
     const rows = await db
@@ -15,6 +15,7 @@ export const getInventoryTool: ToolSpec = {
       .from(inventoryItems)
       .where(eq(inventoryItems.userId, ctx.userId));
     const items = rows.map((r) => ({
+      id: r.id,
       name: r.name,
       quantity: r.quantity,
       unit: r.unit,

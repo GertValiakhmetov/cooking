@@ -9,6 +9,7 @@ import { env } from "../env";
 import { chatRoutes, conversationRoutes } from "../routes/chat";
 import { equipmentRoutes } from "../routes/equipment";
 import { inventoryRoutes } from "../routes/inventory";
+import { recipeRoutes } from "../routes/recipes";
 
 export function createApp() {
   const app = new Hono<{ Variables: AuthVars }>();
@@ -33,6 +34,7 @@ export function createApp() {
   app.route("/chat", chatRoutes);
   app.route("/inventory", inventoryRoutes);
   app.route("/equipment", equipmentRoutes);
+  app.route("/recipes", recipeRoutes);
 
   // API docs — dev only: OpenAPI generated from the Zod schemas, Scalar UI on /docs.
   if (env.NODE_ENV !== "production") {

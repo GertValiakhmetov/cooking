@@ -1,23 +1,15 @@
 import { and, eq } from "drizzle-orm";
 import { Hono } from "hono";
 import { describeRoute } from "hono-openapi";
-import { z } from "zod";
 import { type AuthVars, requireUser } from "../auth/middleware";
 import { db } from "../db/client";
 import { inventoryItems } from "../db/schema";
+import {
+  inventoryCreateSchema as createSchema,
+  inventoryUpdateSchema as updateSchema,
+} from "../domain/inventory";
 import { jsonBody } from "../http/openapi";
 import { rateLimit } from "../http/rate-limit";
-
-const dateString = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "expected YYYY-MM-DD");
-
-const createSchema = z.object({
-  name: z.string().min(1),
-  quantity: z.number().nonnegative().nullish(),
-  unit: z.string().min(1).nullish(),
-  category: z.string().min(1).nullish(),
-  expiresOn: dateString.nullish(),
-});
-const updateSchema = createSchema.partial();
 
 const idParam = {
   name: "id",
