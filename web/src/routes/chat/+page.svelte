@@ -91,11 +91,15 @@
   let thinkingPhrase = $state(THINKING_PHRASES[0]);
   $effect(() => {
     if (!thinking) return;
+    // `current` is a plain local: the effect must not READ thinkingPhrase, or it
+    // would depend on the very state it writes and loop (effect_update_depth_exceeded).
+    let current = "";
     const pick = () => {
-      let next = thinkingPhrase;
-      while (next === thinkingPhrase) {
+      let next = current;
+      while (next === current) {
         next = THINKING_PHRASES[Math.floor(Math.random() * THINKING_PHRASES.length)];
       }
+      current = next;
       thinkingPhrase = next;
     };
     pick();
