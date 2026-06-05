@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Bookmark, ChefHat, Check, Clock, Pause, Timer, Trash2, Users, X } from "lucide-svelte";
-  import type { Recipe } from "./recipe";
+  import { hasScalableSteps, portionsWord, type Recipe, scaleAmount, scaleStepText } from "./recipe";
 
   let {
     recipe,
@@ -12,7 +12,8 @@
   }: {
     recipe: Recipe;
     onsave?: () => void;
-    oncook?: () => void;
+    /** Receives the servings chosen via the stepper, so cooking mode scales too. */
+    oncook?: (servings: number) => void;
     ondelete?: () => void;
     saved?: boolean;
     // Set of ingredient names not in the pantry (from POST /recipes/:id/check).
@@ -26,28 +27,8 @@
 
   let servings = $state(recipe.servings);
   const ratio = $derived(recipe.servings > 0 ? servings / recipe.servings : 1);
-
-  function portionsWord(n: number): string {
-    const mod10 = n % 10;
-    const mod100 = n % 100;
-    if (mod10 === 1 && mod100 !== 11) return "порцию";
-    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "порции";
-    return "порций";
-  }
-
-  // Scale a base amount by the servings ratio, formatted the Russian way (comma decimals).
-  function scaleAmount(amount: number | null, unit: string | null): string {
-    if (amount == null) return "по вкусу";
-    const v = amount * ratio;
-    let out: number;
-    if (unit === "г" || unit === "мл") {
-      out = v >= 100 ? Math.round(v / 10) * 10 : Math.round(v);
-    } else {
-      out = Math.round(v * 2) / 2;
-    }
-    const str = Number.isInteger(out) ? String(out) : String(out).replace(".", ",");
-    return unit ? `${str} ${unit}` : str;
-  }
+  // Steps with {{…}} markers rescale together with the stepper; old recipes get a warning note.
+  const scalableSteps = $derived(hasScalableSteps(recipe));
 
   function clock(total: number): string {
     const m = Math.floor(total / 60);
@@ -118,16 +99,16 @@
             </span>
           {/if}
           {ing.name}
-          <span class="qty">{scaleAmount(ing.amount, ing.unit)}</span>
+          <span class="qty">{scaleAmount(ing.amount, ing.unit, ratio)}</span>
         </div>
       {/each}
     </div>
 
     <div class="rc-col rc-col--steps">
       <div class="rc-section-label">Приготовление</div>
-      {#if servings !== recipe.servings}
-        <!-- Степпер пересчитывает только колонку ингредиентов; граммовки в тексте шагов
-             остаются базовыми — честно предупреждаем, а не молчим. -->
+      {#if servings !== recipe.servings && !scalableSteps}
+        <!-- Старый рецепт без {{…}}-маркеров: текст шагов не пересчитать —
+             честно предупреждаем, а не молчим. -->
         <div class="rc-steps-note">
           Количества в шагах — на {recipe.servings} {portionsWord(recipe.servings)}
         </div>
@@ -139,7 +120,7 @@
             <div class="step-main">
               <div class="step-text">
                 {#if step.title}<div class="step-title">{step.title}</div>{/if}
-                {step.content}
+                {scaleStepText(step.content, ratio)}
               </div>
               {#if step.timerSeconds}
                 <button
@@ -181,7 +162,7 @@
         <Bookmark size={18} />{saved ? "Сохранено" : "Сохранить рецепт"}
       </button>
     {/if}
-    <button type="button" class="btn btn--primary" onclick={() => oncook?.()}>
+    <button type="button" class="btn btn--primary" onclick={() => oncook?.(servings)}>
       <ChefHat size={18} />Готовить
     </button>
   </div>

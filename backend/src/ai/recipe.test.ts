@@ -35,4 +35,29 @@ describe("recipeSchema", () => {
     });
     expect(res.success).toBe(false);
   });
+
+  const withStep = (content: string) => ({
+    title: "X",
+    servings: 2,
+    totalMinutes: null,
+    ingredients: [{ name: "a", amount: null, unit: null }],
+    steps: [{ title: "Шаг", content, timerSeconds: null }],
+  });
+
+  it("accepts quantity markers in step content", () => {
+    const res = recipeSchema.safeParse(
+      withStep("К {{300 г}} творога добавь {{1 шт}} яйцо, {{1,5 ст.л.}} сахара и жарь 3–4 мин."),
+    );
+    expect(res.success).toBe(true);
+  });
+
+  it("accepts steps without any markers (old-style content)", () => {
+    expect(recipeSchema.safeParse(withStep("Взбей яйца и пожарь.")).success).toBe(true);
+  });
+
+  it("rejects malformed quantity markers", () => {
+    expect(recipeSchema.safeParse(withStep("Добавь {{соль по вкусу}}.")).success).toBe(false);
+    expect(recipeSchema.safeParse(withStep("Добавь {{300 г муки.")).success).toBe(false);
+    expect(recipeSchema.safeParse(withStep("Добавь 300 г}} муки.")).success).toBe(false);
+  });
 });

@@ -11,13 +11,25 @@
     Timer,
     X,
   } from "lucide-svelte";
-  import type { Recipe } from "./recipe";
+  import { hasScalableSteps, portionsWord, type Recipe, scaleAmount, scaleStepText } from "./recipe";
 
-  let { recipe, onclose, ondone }: { recipe: Recipe; onclose: () => void; ondone: () => void } =
-    $props();
+  let {
+    recipe,
+    servings = recipe.servings,
+    onclose,
+    ondone,
+  }: {
+    recipe: Recipe;
+    /** Порции, выбранные степпером карточки; по умолчанию — базовые из рецепта. */
+    servings?: number;
+    onclose: () => void;
+    ondone: () => void;
+  } = $props();
 
   const steps = recipe.steps;
   const last = steps.length - 1;
+  const ratio = $derived(recipe.servings > 0 ? servings / recipe.servings : 1);
+  const scalableSteps = $derived(hasScalableSteps(recipe));
 
   let idx = $state(0);
   let ingOpen = $state(false);
@@ -156,10 +168,6 @@
     }
   }
 
-  function ingQty(amount: number | null, unit: string | null): string {
-    if (amount == null) return "по вкусу";
-    return unit ? `${amount} ${unit}` : String(amount);
-  }
 </script>
 
 <div class="cook-overlay">
@@ -221,7 +229,7 @@
         <div class="cook-content">
           <div class="cook-stepnum">Шаг {idx + 1}</div>
           {#if steps[idx].title}<div class="cook-steptitle">{steps[idx].title}</div>{/if}
-          <div class="cook-text">{steps[idx].content}</div>
+          <div class="cook-text">{scaleStepText(steps[idx].content, ratio)}</div>
 
           {#if timers[idx]}
             {@const t = timers[idx]}
@@ -248,8 +256,15 @@
         </button>
         <div class="cook-ing-list">
           <div class="cook-ing-inner">
+            {#if servings !== recipe.servings && !scalableSteps}
+              <div class="rc-steps-note">
+                Количества в шагах — на {recipe.servings} {portionsWord(recipe.servings)}
+              </div>
+            {/if}
             {#each recipe.ingredients as ing (ing.name)}
-              <div class="ing">{ing.name}<span class="qty">{ingQty(ing.amount, ing.unit)}</span></div>
+              <div class="ing">
+                {ing.name}<span class="qty">{scaleAmount(ing.amount, ing.unit, ratio)}</span>
+              </div>
             {/each}
           </div>
         </div>

@@ -16,6 +16,48 @@ export type ContentBlock =
   | { type: "tool_use"; id: string; name: string; input: unknown }
   | { type: "tool_result"; tool_use_id: string; content: string; is_error?: boolean };
 
+/** Scale a base amount by `ratio`, formatted the Russian way (comma decimals). */
+export function scaleAmount(amount: number | null, unit: string | null, ratio: number): string {
+  if (amount == null) return "по вкусу";
+  const v = amount * ratio;
+  let out: number;
+  if (unit === "г" || unit === "мл") {
+    // round grams/ml to a tidy step
+    out = v >= 100 ? Math.round(v / 10) * 10 : Math.round(v);
+  } else {
+    out = Math.round(v * 2) / 2;
+  }
+  const str = Number.isInteger(out) ? String(out) : String(out).replace(".", ",");
+  return unit ? `${str} ${unit}` : str;
+}
+
+/** {{300 г}} markers in step text — mirrors the backend recipeStepSchema contract. */
+const QUANTITY_MARKER = /\{\{([^{}]*)\}\}/g;
+
+/** Replace {{N unit}} markers with amounts scaled by `ratio`; everything else stays literal. */
+export function scaleStepText(content: string, ratio: number): string {
+  return content.replace(QUANTITY_MARKER, (_, body: string) => {
+    const m = /^(\d+(?:[.,]\d+)?)\s*(.*)$/.exec(body.trim());
+    if (!m) return body.trim(); // не парсится — показываем без скобок, не врём числом
+    const amount = Number(m[1].replace(",", "."));
+    return scaleAmount(amount, m[2] || null, ratio);
+  });
+}
+
+/** True if any step carries scalable {{…}} markers (старые рецепты их не имеют). */
+export function hasScalableSteps(recipe: Recipe): boolean {
+  return recipe.steps.some((s) => /\{\{[^{}]*\}\}/.test(s.content));
+}
+
+/** «на 1 порцию / 2 порции / 5 порций» */
+export function portionsWord(n: number): string {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return "порцию";
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "порции";
+  return "порций";
+}
+
 /** Light runtime guard — the recipe was Zod-validated server-side before storage. */
 export function asRecipe(input: unknown): Recipe | null {
   if (!input || typeof input !== "object") return null;

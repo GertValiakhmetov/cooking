@@ -12,7 +12,7 @@
   let loading = $state(true);
   let q = $state("");
   let detail = $state<SavedRecipe | null>(null);
-  let cooking = $state<Recipe | null>(null);
+  let cooking = $state<{ recipe: Recipe; servings: number } | null>(null);
   // recipeId → set of missing ingredient names (from POST /recipes/:id/check)
   let missingMap = $state<Record<string, Set<string>>>({});
   let toasts = $state<{ id: number; text: string; undo?: () => void }[]>([]);
@@ -81,7 +81,7 @@
           recipe={detail}
           missing={missingMap[detail.id]}
           ondelete={() => detail && del(detail)}
-          oncook={() => (cooking = detail)}
+          oncook={(servings) => detail && (cooking = { recipe: detail, servings })}
         />
       </div>
     </div>
@@ -142,7 +142,12 @@
   {/if}
 
   {#if cooking}
-    <CookingMode recipe={cooking} onclose={() => (cooking = null)} ondone={() => (cooking = null)} />
+    <CookingMode
+      recipe={cooking.recipe}
+      servings={cooking.servings}
+      onclose={() => (cooking = null)}
+      ondone={() => (cooking = null)}
+    />
   {/if}
 
   {#if toasts.length > 0}

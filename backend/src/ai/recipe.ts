@@ -16,13 +16,35 @@ export const recipeIngredientSchema = z.object({
     ),
 });
 
+/**
+ * Scalable-quantity markers in step text: «{{300 г}} творога», «{{1 шт}} яйцо».
+ * Inside the braces — one number (decimal comma or dot) + optional unit. Clients
+ * rescale these when the user changes servings; everything else stays literal.
+ */
+export const QUANTITY_MARKER = /\{\{([^{}]*)\}\}/g;
+const MARKER_BODY = /^\d+(?:[.,]\d+)?(?:\s+[^{}\s][^{}]*)?$/;
+
+/** Every {{…}} parses and no stray double braces remain — malformed markers go back to the model. */
+function validQuantityMarkers(content: string): boolean {
+  const stripped = content.replace(QUANTITY_MARKER, (_, body: string) =>
+    MARKER_BODY.test(body.trim()) ? "" : "{{bad}}",
+  );
+  return !/\{\{|\}\}/.test(stripped);
+}
+
 export const recipeStepSchema = z.object({
   title: z.string().min(1).describe("Короткая метка шага в 2–4 слова, например «Обжарить лук»"),
   content: z
     .string()
     .min(1)
+    .refine(validQuantityMarkers, {
+      message:
+        "Маркеры количеств не парсятся: внутри {{…}} должно быть одно число и необязательная единица, например {{300 г}}; фигурные скобки без пары недопустимы",
+    })
     .describe(
-      "Полная инструкция шага: что и как делать, с температурой и признаками готовности, где уместно",
+      "Полная инструкция шага: что и как делать, с температурой и признаками готовности, где уместно. " +
+        "Количества, зависящие от числа порций, оборачивай в двойные фигурные скобки: «добавь {{300 г}} творога», «{{1 шт}} яйцо», «влей {{2 л}} воды» — одно число и единица внутри. " +
+        "НЕ оборачивай времена, температуры, размеры нарезки и диапазоны («3–4 мин», «180°C», «кубиками 2 см» — без скобок).",
     ),
   timerSeconds: z
     .number()

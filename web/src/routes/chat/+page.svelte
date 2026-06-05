@@ -38,7 +38,7 @@
   let following = $state(true);
   let showPill = $state(false);
   let toasts = $state<{ id: number; text: string }[]>([]);
-  let cooking = $state<Recipe | null>(null);
+  let cooking = $state<{ recipe: Recipe; servings: number } | null>(null);
 
   let scrollEl: HTMLDivElement | undefined;
   let taEl: HTMLTextAreaElement | undefined;
@@ -355,7 +355,7 @@
               recipe={entry.recipe}
               saved={entry.saved}
               onsave={() => saveRecipe(entry)}
-              oncook={() => (cooking = entry.recipe)}
+              oncook={(servings) => (cooking = { recipe: entry.recipe, servings })}
             />
           {/if}
         {/each}
@@ -402,6 +402,11 @@
   {/if}
 
   {#if cooking}
-    <CookingMode recipe={cooking} onclose={() => (cooking = null)} ondone={() => (cooking = null)} />
+    <CookingMode
+      recipe={cooking.recipe}
+      servings={cooking.servings}
+      onclose={() => (cooking = null)}
+      ondone={() => (cooking = null)}
+    />
   {/if}
 </div>
