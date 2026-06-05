@@ -49,6 +49,30 @@ export type SavedRecipe = Recipe & {
   source: "ai" | "manual";
   createdAt: string;
 };
+export type InventoryItem = {
+  id: string;
+  name: string;
+  quantity: string | null;
+  unit: string | null;
+  category: string | null;
+  expiresOn: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+export type EquipmentItem = {
+  id: string;
+  name: string;
+  type: string;
+  attributes: Record<string, unknown> | null;
+  createdAt: string;
+};
+export type InventoryInput = {
+  name?: string;
+  quantity?: number | null;
+  unit?: string | null;
+  category?: string | null;
+  expiresOn?: string | null;
+};
 
 export const api = {
   redeem: (token: string, displayName?: string) =>
@@ -71,19 +95,34 @@ export const api = {
       request<{ messages: StoredMessage[] }>(`/conversations/${id}/messages`),
   },
 
+  inventory: {
+    list: () => request<{ items: InventoryItem[] }>("/inventory"),
+    create: (body: InventoryInput) =>
+      request<InventoryItem>("/inventory", { method: "POST", body: JSON.stringify(body) }),
+    update: (id: string, patch: InventoryInput) =>
+      request<InventoryItem>(`/inventory/${id}`, { method: "PATCH", body: JSON.stringify(patch) }),
+    remove: (id: string) => request<{ ok: true }>(`/inventory/${id}`, { method: "DELETE" }),
+  },
+
   equipment: {
+    list: () => request<{ items: EquipmentItem[] }>("/equipment"),
     create: (name: string, type: string) =>
-      request<{ id: string }>("/equipment", {
+      request<EquipmentItem>("/equipment", {
         method: "POST",
         body: JSON.stringify({ name, type }),
       }),
+    remove: (id: string) => request<{ ok: true }>(`/equipment/${id}`, { method: "DELETE" }),
   },
 
   recipes: {
+    list: () => request<{ recipes: SavedRecipe[] }>("/recipes"),
     save: (recipe: Recipe) =>
       request<SavedRecipe>("/recipes", {
         method: "POST",
         body: JSON.stringify({ ...recipe, source: "ai" }),
       }),
+    remove: (id: string) => request<{ ok: true }>(`/recipes/${id}`, { method: "DELETE" }),
+    check: (id: string) =>
+      request<{ have: string[]; missing: string[] }>(`/recipes/${id}/check`, { method: "POST" }),
   },
 };

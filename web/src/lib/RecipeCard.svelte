@@ -1,13 +1,28 @@
 <script lang="ts">
-  import { Bookmark, ChefHat, Clock, Pause, Timer, Users } from "lucide-svelte";
+  import { Bookmark, ChefHat, Check, Clock, Pause, Timer, Trash2, Users, X } from "lucide-svelte";
   import type { Recipe } from "./recipe";
 
   let {
     recipe,
     onsave,
     oncook,
+    ondelete,
     saved = false,
-  }: { recipe: Recipe; onsave?: () => void; oncook?: () => void; saved?: boolean } = $props();
+    missing,
+  }: {
+    recipe: Recipe;
+    onsave?: () => void;
+    oncook?: () => void;
+    ondelete?: () => void;
+    saved?: boolean;
+    // Set of ingredient names not in the pantry (from POST /recipes/:id/check).
+    // When provided, ingredients show ✓/✗ marks and a "Не хватает N" badge.
+    missing?: Set<string>;
+  } = $props();
+
+  const missingCount = $derived(
+    missing ? recipe.ingredients.filter((i) => missing.has(i.name)).length : 0,
+  );
 
   let servings = $state(recipe.servings);
   const ratio = $derived(recipe.servings > 0 ? servings / recipe.servings : 1);
@@ -83,9 +98,17 @@
 
   <div class="rc-body">
     <div class="rc-col rc-col--ing">
-      <div class="rc-section-label">Ингредиенты</div>
+      <div class="rc-section-label">
+        Ингредиенты
+        {#if missingCount > 0}<span class="tag tag--missing">Не хватает {missingCount}</span>{/if}
+      </div>
       {#each recipe.ingredients as ing (ing.name)}
-        <div class="ing">
+        <div class="ing" class:missing={missing?.has(ing.name)}>
+          {#if missing}
+            <span class="mark" style="color: {missing.has(ing.name) ? 'var(--warning)' : 'var(--success)'}">
+              {#if missing.has(ing.name)}<X size={20} />{:else}<Check size={20} />{/if}
+            </span>
+          {/if}
           {ing.name}
           <span class="qty">{scaleAmount(ing.amount, ing.unit)}</span>
         </div>
@@ -133,9 +156,15 @@
   </div>
 
   <div class="rc-actions">
-    <button type="button" class="btn btn--secondary" onclick={() => onsave?.()} disabled={saved}>
-      <Bookmark size={18} />{saved ? "Сохранено" : "Сохранить рецепт"}
-    </button>
+    {#if ondelete}
+      <button type="button" class="btn btn--destructive" onclick={() => ondelete?.()}>
+        <Trash2 size={18} />Удалить
+      </button>
+    {:else}
+      <button type="button" class="btn btn--secondary" onclick={() => onsave?.()} disabled={saved}>
+        <Bookmark size={18} />{saved ? "Сохранено" : "Сохранить рецепт"}
+      </button>
+    {/if}
     <button type="button" class="btn btn--primary" onclick={() => oncook?.()}>
       <ChefHat size={18} />Готовить
     </button>
