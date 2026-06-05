@@ -166,9 +166,6 @@ messages
 
 ## 7. Claude integration
 
-### 7.1 Billing / access (important)
-The runtime uses an **Anthropic API key with pay-as-you-go API billing**, not subscription credentials. This is the supported path for a multi-user app. The key lives **only** on the backend (env), never in any client. (Anthropic restricted third-party/subscription access in April 2026 and split programmatic usage onto metered credits from June 15, 2026 — API billing sidesteps both.)
-
 ### 7.2 Model selection
 - Main assistant + recipe generation: **`claude-sonnet-4-6`** (good quality/cost balance).
 - Cheap/fast paths (e.g. short classification, title generation): **`claude-haiku-4-5-20251001`**.
@@ -281,7 +278,6 @@ Recipes
 ## 9. Auth and security
 
 - **Auth (v1): invite tokens, no email.** The maintainer mints a single-use **invite token** per friend (backend CLI) and shares the redeem link out-of-band (e.g. Telegram). The client redeems it (`POST /auth/redeem`) for a **long-lived JWT session** (~30 days), so no one re-authenticates mid-cooking; the invite token is single-use and expires (~7 days) if unredeemed. Issuing the invite *is* the access gate — no open registration, no allowlist. **Email magic-link** (Resend + domain) is kept as a later drop-in upgrade (§10) that reuses the same token→JWT machinery, just delivered by email.
-- **API key:** `ANTHROPIC_API_KEY` is backend-only. It must never appear in the web bundle, the Android app, or any client-visible config.
 - **No direct model calls from clients.** All Claude traffic goes through the backend.
 - **CORS:** the web client calls the API cross-origin, so restrict CORS to the known web origin(s) (`CORS_ORIGIN`). Native apps are unaffected.
 - **Ownership checks** on every authenticated endpoint and tool handler (a user only ever touches their own rows).
@@ -349,11 +345,5 @@ Recipes
 - **Claude Agent SDK rejected:** evaluated migrating off the Messages API (motivation: spending a Max-subscription agent-credit pool). Rejected — official guidance for app backends with custom DB tools is Messages API + tool use; subscription credits cover the owner's own agent usage, not multi-user apps (§7.1 stands); prod API cost is negligible at our scale. Subscription credits are spent on development tooling (Claude Code) instead. (decided)
 
 ---
-
-## 13. References
-
-- Claude API overview: https://docs.claude.com/en/api/overview
-- API docs map (tool use, streaming, prompt caching, models): https://docs.claude.com/en/docs_site_map.md
-- Claude Code overview: https://docs.claude.com/en/docs/claude-code/overview
 
 > Confirm current model IDs and SDK details against the docs above before launch — model names and limits change over time.
