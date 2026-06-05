@@ -1,0 +1,44 @@
+<!-- @dsCard group="Colors" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_card.css">
+<style>
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .pair { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .chip { height: 44px; border-radius: var(--radius-sm); display:flex; align-items:flex-end; padding:6px; }
+  .chip span { font-family: var(--font-mono); font-size: 9px; }
+  .group-name { font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+  <div class="grid">
+    <div>
+      <div class="group-name" style="color:var(--accent)">Accent (paprika)</div>
+      <div class="pair">
+        <div class="chip" style="background:var(--accent)"><span style="color:#fff">accent</span></div>
+        <div class="chip" style="background:var(--accent-hover)"><span style="color:#fff">hover</span></div>
+        <div class="chip" style="background:var(--accent-soft)"><span style="color:var(--accent)">soft</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="group-name" style="color:var(--success)">Success (herb)</div>
+      <div class="pair">
+        <div class="chip" style="background:var(--success)"><span style="color:#fff">success</span></div>
+        <div class="chip" style="background:var(--success-soft)"><span style="color:var(--success)">soft</span></div>
+        <div class="chip" style="background:var(--warning)"><span style="color:#fff">warning</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="group-name" style="color:var(--danger)">Danger + warning soft</div>
+      <div class="pair">
+        <div class="chip" style="background:var(--danger)"><span style="color:#fff">danger</span></div>
+        <div class="chip" style="background:var(--danger-soft)"><span style="color:var(--danger)">soft</span></div>
+        <div class="chip" style="background:var(--warning-soft)"><span style="color:var(--warning)">warn soft</span></div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

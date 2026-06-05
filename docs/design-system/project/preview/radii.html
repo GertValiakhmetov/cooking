@@ -1,0 +1,25 @@
+<!-- @dsCard group="Spacing" -->
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_card.css">
+<style>
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; align-items: end; }
+  .cell { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .box { width: 100%; height: 72px; background: var(--accent-soft); border: 2px solid var(--accent); }
+  .tok { font-family: var(--font-mono); font-size: 11px; color: var(--text-primary); font-weight:600; }
+  .px { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+  <div class="grid">
+    <div class="cell"><div class="box" style="border-radius:var(--radius-sm)"></div><span class="tok">radius-sm</span><span class="px">8px</span></div>
+    <div class="cell"><div class="box" style="border-radius:var(--radius-md)"></div><span class="tok">radius-md</span><span class="px">12px</span></div>
+    <div class="cell"><div class="box" style="border-radius:var(--radius-lg)"></div><span class="tok">radius-lg</span><span class="px">16px</span></div>
+    <div class="cell"><div class="box" style="border-radius:var(--radius-xl)"></div><span class="tok">radius-xl</span><span class="px">24px</span></div>
+    <div class="cell"><div class="box" style="border-radius:var(--radius-pill)"></div><span class="tok">radius-pill</span><span class="px">999px</span></div>
+  </div>
+</body>
+</html>

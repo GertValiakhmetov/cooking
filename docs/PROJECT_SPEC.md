@@ -344,6 +344,8 @@ Recipes
 - **Aeza rejected as provider:** OFAC-sanctioned (SDN list, 2025-07-01) bulletproof host actively evading sanctions — incompatible with reliably/legitimately reaching the US-based Anthropic API. (decided)
 - **Language & units:** Russian by default (assistant, recipes, UI); metric + °C. (decided)
 - **Assistant persona:** concise/practical — short answers, clear steps, at-the-stove friendly; elaborates on request. (decided)
+- **Brand & design system:** «Су-шеф»; tokens/components/UI kit live in `docs/design-system/` (Claude Design handoff, 2026-06-04). Web and Android implement its named semantic tokens — no ad-hoc values. (decided)
+- **Voice details:** assistant addresses the user as «ты»; UI chrome contains no emoji (per design guide), the assistant's chat text may use them sparingly. (decided)
 
 ---
 

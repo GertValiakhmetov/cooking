@@ -1,0 +1,34 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="_card.css">
+<style>
+  body { display: flex; flex-direction: column; gap: 16px; }
+  .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); margin-bottom: 6px; }
+  [data-lucide] { width: 20px; height: 20px; }
+</style>
+</head>
+<body>
+  <div>
+    <div class="lbl">text field · focus</div>
+    <input class="field" value="Помидоры черри" style="border-color:var(--accent)">
+  </div>
+  <div>
+    <div class="lbl">search field</div>
+    <div class="search"><i data-lucide="search"></i><input placeholder="Искать в кладовой" value=""></div>
+  </div>
+  <div>
+    <div class="lbl">chat input bar · pinned bottom, large send</div>
+    <div class="chatbar" style="border-radius:var(--radius-lg); border:1px solid var(--border)">
+      <textarea placeholder="Спросите что-нибудь…">Что приготовить из курицы и риса?</textarea>
+      <button class="send"><i data-lucide="arrow-up"></i></button>
+    </div>
+  </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

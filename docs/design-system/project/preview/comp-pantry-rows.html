@@ -1,0 +1,49 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="_card.css">
+<style>
+  body { background: var(--bg); }
+  .list { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; }
+  .prow { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); min-height: 60px; }
+  .prow:last-child { border-bottom: none; }
+  .pname { font-size: 17px; font-weight: 500; }
+  .pqty { font-family: var(--font-mono); font-size: 14px; color: var(--text-secondary); }
+  .right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  [data-lucide] { width: 14px; height: 14px; }
+  .swipe { position: relative; }
+  .swipe .del { position:absolute; right:0; top:0; bottom:0; width:84px; background:var(--danger); color:#fff; display:flex; align-items:center; justify-content:center; }
+  .swipe .fg { position: relative; background: var(--surface); transform: translateX(-84px); }
+  [data-lucide].big { width: 20px; height: 20px; }
+</style>
+</head>
+<body>
+  <div class="list">
+    <div class="prow">
+      <span class="pname">Молоко</span><span class="pqty">1 л</span>
+      <span class="right"><span class="tag tag--category">Молочное</span></span>
+    </div>
+    <div class="prow">
+      <span class="pname">Яйца</span><span class="pqty">10 шт.</span>
+      <span class="right"><span class="tag tag--soon"><i data-lucide="clock"></i>2 дня</span></span>
+    </div>
+    <div class="prow">
+      <span class="pname" style="color:var(--text-tertiary)">Сметана</span><span class="pqty">200 г</span>
+      <span class="right"><span class="tag tag--expired"><i data-lucide="alert-triangle"></i>Просрочено</span></span>
+    </div>
+    <div class="swipe">
+      <div class="del"><i data-lucide="trash-2" class="big"></i></div>
+      <div class="prow fg">
+        <span class="pname">Сливочное масло</span><span class="pqty">180 г</span>
+        <span class="right" style="color:var(--text-tertiary)"><i data-lucide="chevron-left" class="big"></i></span>
+      </div>
+    </div>
+  </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

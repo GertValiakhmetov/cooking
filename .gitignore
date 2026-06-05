@@ -6,6 +6,7 @@ node_modules/
 dist/
 build/
 *.tsbuildinfo
+.svelte-kit/
 
 # env / secrets — never commit real values
 .env

@@ -1,0 +1,63 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="_card.css">
+<style>
+  body { background: var(--bg); }
+  .card { padding: 0; overflow: hidden; }
+  .rc-head { padding: 16px; border-bottom: 1px solid var(--border); }
+  .rc-meta { display: flex; align-items: center; gap: 16px; margin-top: 8px; color: var(--text-secondary); font-size: 15px; }
+  .rc-meta .row { gap: 6px; flex-wrap: nowrap; white-space: nowrap; }
+  .stepper { display: inline-flex; align-items: center; gap: 12px; margin-left: auto; }
+  .stepper button { width: 32px; height: 32px; border-radius: var(--radius-sm); border: 1.5px solid var(--border-strong); background: var(--surface); color: var(--text-primary); font-size: 18px; cursor: pointer; }
+  .stepper .n { font-weight: 600; font-variant-numeric: tabular-nums; min-width: 18px; text-align: center; }
+  .rc-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+  .ing { display: flex; align-items: center; gap: 12px; font-size: 16px; }
+  .ing .mark { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; flex: 0 0 22px; }
+  .ing.missing { color: var(--text-tertiary); }
+  .ing .qty { margin-left: auto; color: var(--text-secondary); font-variant-numeric: tabular-nums; }
+  .step { display: flex; gap: 12px; align-items: flex-start; }
+  .step .num { width: 28px; height: 28px; flex:0 0 28px; border-radius: var(--radius-pill); background: var(--accent-soft); color: var(--accent); font-weight: 700; display:flex; align-items:center; justify-content:center; font-size: 15px; }
+  .step .txt { font-size: 16px; line-height: 24px; }
+  .rc-actions { display: flex; gap: 10px; padding: 12px 16px; border-top: 1px solid var(--border); }
+  [data-lucide] { width: 18px; height: 18px; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="rc-head">
+      <div class="t-title">Плов с курицей</div>
+      <div class="rc-meta">
+        <span class="row"><i data-lucide="clock"></i>45 мин</span>
+        <span class="row"><i data-lucide="flame"></i>Средне</span>
+        <span class="stepper"><i data-lucide="users"></i><button>−</button><span class="n">4</span><button>+</button></span>
+      </div>
+    </div>
+    <div class="rc-body">
+      <div class="ing"><span class="mark" style="color:var(--success)"><i data-lucide="check"></i></span>Куриное бедро<span class="qty">600 г</span></div>
+      <div class="ing"><span class="mark" style="color:var(--success)"><i data-lucide="check"></i></span>Рис басмати<span class="qty">2 ст.</span></div>
+      <div class="ing missing"><span class="mark" style="color:var(--warning)"><i data-lucide="plus"></i></span>Морковь<span class="qty">2 шт.</span></div>
+      <div class="step" style="margin-top:4px">
+        <span class="num">1</span>
+        <div class="txt">Обжарьте лук до золотистого цвета, помешивая.</div>
+      </div>
+      <div class="step">
+        <span class="num">2</span>
+        <div class="txt" style="flex:1">Тушите под крышкой 20 минут.
+          <div style="margin-top:8px"><button class="timer-btn"><i data-lucide="timer"></i><span class="time">20:00</span></button></div>
+        </div>
+      </div>
+    </div>
+    <div class="rc-actions">
+      <button class="btn btn--primary" style="flex:1"><i data-lucide="bookmark"></i>Сохранить</button>
+      <button class="btn btn--destructive"><i data-lucide="trash-2"></i></button>
+    </div>
+  </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+/* Shared chrome for Design System preview cards (~700px wide) */
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text-primary);
+  padding: 20px;
+  -webkit-font-smoothing: antialiased;
+}
+.row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.col { display: flex; flex-direction: column; }
+.label-mono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: -0.01em;
+}
+.swatch {
+  width: 100%;
+  height: 56px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+}
+.sw-cell { display: flex; flex-direction: column; gap: 6px; flex: 1; min-width: 0; }
+.sw-name { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+.sw-val { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); }

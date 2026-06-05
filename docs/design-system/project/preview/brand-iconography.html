@@ -1,0 +1,44 @@
+<!-- @dsCard group="Brand" -->
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_card.css">
+<style>
+  body { display: flex; flex-direction: column; gap: 14px; }
+  .grid { display: grid; grid-template-columns: repeat(10, 1fr); gap: 14px; }
+  .ic { display: flex; flex-direction: column; align-items: center; gap: 6px; color: var(--text-primary); }
+  .ic [data-lucide] { width: 24px; height: 24px; stroke-width: 2; }
+  .ic span { font-family: var(--font-mono); font-size: 8px; color: var(--text-tertiary); }
+  .note { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); }
+</style>
+</head>
+<body>
+  <div class="note">Lucide · 2px stroke · 24px grid · rounded caps. No emoji in product UI.</div>
+  <div class="grid">
+    <div class="ic"><i data-lucide="message-circle"></i><span>chat</span></div>
+    <div class="ic"><i data-lucide="refrigerator"></i><span>pantry</span></div>
+    <div class="ic"><i data-lucide="book-open"></i><span>recipes</span></div>
+    <div class="ic"><i data-lucide="timer"></i><span>timer</span></div>
+    <div class="ic"><i data-lucide="flame"></i><span>cook</span></div>
+    <div class="ic"><i data-lucide="users"></i><span>servings</span></div>
+    <div class="ic"><i data-lucide="check"></i><span>have</span></div>
+    <div class="ic"><i data-lucide="plus"></i><span>add</span></div>
+    <div class="ic"><i data-lucide="search"></i><span>search</span></div>
+    <div class="ic"><i data-lucide="sparkles"></i><span>ask</span></div>
+    <div class="ic"><i data-lucide="clock"></i><span>time</span></div>
+    <div class="ic"><i data-lucide="bookmark"></i><span>save</span></div>
+    <div class="ic"><i data-lucide="trash-2"></i><span>delete</span></div>
+    <div class="ic"><i data-lucide="mic"></i><span>voice</span></div>
+    <div class="ic"><i data-lucide="arrow-up"></i><span>send</span></div>
+    <div class="ic"><i data-lucide="alert-triangle"></i><span>warn</span></div>
+    <div class="ic"><i data-lucide="pause"></i><span>pause</span></div>
+    <div class="ic"><i data-lucide="chef-hat"></i><span>brand</span></div>
+    <div class="ic"><i data-lucide="utensils"></i><span>equip</span></div>
+    <div class="ic"><i data-lucide="settings"></i><span>settings</span></div>
+  </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!-- @dsCard group="Brand" -->
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="_card.css">
+<style>
+  body { display: flex; align-items: center; gap: 40px; }
+  .tile { display:flex; flex-direction:column; gap:8px; align-items:center; }
+  .cap { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); }
+  .dark { background: var(--surface); padding: 16px 24px; border-radius: var(--radius-md); }
+</style>
+</head>
+<body>
+  <div class="tile">
+    <img src="../assets/wordmark.svg" alt="Су-шеф" height="56">
+    <span class="cap">wordmark · Golos Text 700</span>
+  </div>
+  <div class="tile">
+    <img src="../assets/logomark.svg" alt="logomark" height="64">
+    <span class="cap">logomark · paprika tile</span>
+  </div>
+  <div class="tile">
+    <div data-theme="dark" class="dark" style="background:#181410"><img src="../assets/logomark.svg" alt="logomark on dark" height="48"></div>
+    <span class="cap">on dark bg</span>
+  </div>
+</body>
+</html>

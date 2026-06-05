@@ -1,0 +1,32 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="_card.css">
+<style>
+  body { display: flex; flex-direction: column; gap: 16px; }
+  .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); margin-bottom: 6px; }
+  .col-3 { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 14px; align-items: end; }
+  [data-lucide] { width: 20px; height: 20px; }
+</style>
+</head>
+<body>
+  <div class="col-3">
+    <div><div class="lbl">primary</div><button class="btn btn--primary btn--block"><i data-lucide="sparkles"></i>Спросить</button></div>
+    <div><div class="lbl">secondary</div><button class="btn btn--secondary btn--block">Сохранить</button></div>
+    <div><div class="lbl">destructive</div><button class="btn btn--destructive btn--block"><i data-lucide="trash-2"></i>Удалить</button></div>
+    <div><div class="lbl">icon</div><button class="icon-btn"><i data-lucide="plus"></i></button></div>
+  </div>
+  <div class="col-3">
+    <div><div class="lbl">primary · pressed</div><button class="btn btn--primary btn--block" style="background:var(--accent-hover); transform:scale(0.97)">Спросить</button></div>
+    <div><div class="lbl">secondary · hover</div><button class="btn btn--secondary btn--block" style="background:var(--surface-sunken)">Сохранить</button></div>
+    <div><div class="lbl">disabled</div><button class="btn btn--primary btn--block" disabled>Спросить</button></div>
+    <div><div class="lbl">icon · hover</div><button class="icon-btn" style="background:var(--surface-sunken)"><i data-lucide="mic"></i></button></div>
+  </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

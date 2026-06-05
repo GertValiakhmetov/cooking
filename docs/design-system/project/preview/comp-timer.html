@@ -1,0 +1,28 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="_card.css">
+<style>
+  body { display: flex; gap: 28px; align-items: center; }
+  .grp { display: flex; flex-direction: column; gap: 10px; align-items: flex-start; }
+  .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); }
+  [data-lucide] { width: 18px; height: 18px; }
+</style>
+</head>
+<body>
+  <div class="grp">
+    <div class="lbl">timer · idle (tap to start)</div>
+    <button class="timer-btn"><i data-lucide="timer"></i><span class="time">10:00</span></button>
+  </div>
+  <div class="grp">
+    <div class="lbl">timer · running</div>
+    <button class="timer-btn timer-btn--running"><i data-lucide="pause"></i><span class="time">07:42</span></button>
+  </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

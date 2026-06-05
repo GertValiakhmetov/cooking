@@ -1,0 +1,954 @@
+/* ============================================================
+   Су-шеф — web styles.
+   Implements the design system in docs/design-system/ (tokens +
+   component classes), adapted for the SvelteKit SPA. Use the named
+   semantic tokens — never ad-hoc values (CLAUDE.md convention).
+   TODO(prod): self-host Golos Text woff2 instead of the CDN import.
+   ============================================================ */
+@import url("https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap");
+
+:root {
+  /* ---- Font families ---- */
+  --font-sans: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* ---- Type weights ---- */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* ---- Type scale (role -> size / line / weight) ---- */
+  --text-caption-size: 13px;
+  --text-caption-line: 18px;
+  --text-caption-weight: var(--weight-medium);
+  --text-caption-spacing: 0.01em;
+
+  --text-body-size: 16px;
+  --text-body-line: 24px;
+  --text-body-weight: var(--weight-regular);
+
+  --text-body-large-size: 18px;
+  --text-body-large-line: 28px;
+  --text-body-large-weight: var(--weight-regular);
+
+  --text-title-size: 22px;
+  --text-title-line: 28px;
+  --text-title-weight: var(--weight-semibold);
+
+  --text-heading-size: 28px;
+  --text-heading-line: 34px;
+  --text-heading-weight: var(--weight-bold);
+
+  /* cooking mode — one step, full screen, readable from ~1 m */
+  --text-cooking-size: 40px;
+  --text-cooking-line: 50px;
+  --text-cooking-weight: var(--weight-semibold);
+
+  /* ---- Spacing (4px base) ---- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  --touch-min: 48px;
+
+  /* ---- Radii ---- */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  /* ---- Motion ---- */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* ---- COLOR — light (default) ---- */
+:root,
+[data-theme="light"] {
+  --bg: #fbf6ef;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --surface-sunken: #f3ece2;
+
+  --text-primary: #2a2521;
+  --text-secondary: #6e655c;
+  --text-tertiary: #978c80;
+  --text-on-accent: #ffffff;
+
+  --accent: #c7522b;
+  --accent-hover: #ae441f;
+  --accent-soft: #f7e6dc;
+
+  --success: #2f7d4f;
+  --success-soft: #e2f0e6;
+  --warning: #b7791f;
+  --warning-soft: #f8eccf;
+  --danger: #b23a2b;
+  --danger-soft: #f7e2dd;
+
+  --border: #e7ddd0;
+  --border-strong: #d6c9b8;
+
+  --shadow-sm: 0 1px 2px rgba(58, 43, 30, 0.06), 0 1px 3px rgba(58, 43, 30, 0.05);
+  --shadow-md: 0 2px 6px rgba(58, 43, 30, 0.08), 0 4px 12px rgba(58, 43, 30, 0.06);
+  --shadow-lg: 0 8px 24px rgba(58, 43, 30, 0.12), 0 2px 6px rgba(58, 43, 30, 0.08);
+
+  color-scheme: light;
+}
+
+/* ---- COLOR — dark. Kitchens at night. ---- */
+[data-theme="dark"] {
+  --bg: #181410;
+  --surface: #221d18;
+  --surface-raised: #2b251f;
+  --surface-sunken: #14110d;
+
+  --text-primary: #f3ebe0;
+  --text-secondary: #b0a597;
+  --text-tertiary: #807668;
+  --text-on-accent: #1a140f;
+
+  --accent: #e8825c;
+  --accent-hover: #f0997a;
+  --accent-soft: #3a2a22;
+
+  --success: #5fb880;
+  --success-soft: #1e2e23;
+  --warning: #e0a94e;
+  --warning-soft: #322817;
+  --danger: #e5705c;
+  --danger-soft: #361f1b;
+
+  --border: #36302a;
+  --border-strong: #4a4239;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.45), 0 4px 14px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.4);
+
+  color-scheme: dark;
+}
+
+/* ---- Semantic type classes ---- */
+.t-caption {
+  font:
+    var(--text-caption-weight) var(--text-caption-size) / var(--text-caption-line) var(--font-sans);
+  letter-spacing: var(--text-caption-spacing);
+  color: var(--text-secondary);
+}
+.t-body {
+  font: var(--text-body-weight) var(--text-body-size) / var(--text-body-line) var(--font-sans);
+  color: var(--text-primary);
+}
+.t-body-large {
+  font:
+    var(--text-body-large-weight) var(--text-body-large-size) / var(--text-body-large-line)
+    var(--font-sans);
+  color: var(--text-primary);
+}
+.t-title {
+  font: var(--text-title-weight) var(--text-title-size) / var(--text-title-line) var(--font-sans);
+  color: var(--text-primary);
+}
+.t-heading {
+  font:
+    var(--text-heading-weight) var(--text-heading-size) / var(--text-heading-line) var(--font-sans);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+.t-cooking {
+  font:
+    var(--text-cooking-weight) var(--text-cooking-size) / var(--text-cooking-line) var(--font-sans);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+/* ============================================================
+   APP SHELL — the web app IS the phone screen; centered column
+   on wide viewports, full-bleed on mobile.
+   ============================================================ */
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+.app {
+  height: 100dvh;
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+.app-body {
+  flex: 1;
+  min-height: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.screen {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Top bar ---- */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3) var(--space-2) var(--space-4);
+  min-height: 56px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+.brand-mark {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: var(--accent);
+  color: var(--text-on-accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: var(--weight-bold);
+  font-size: 19px;
+}
+
+/* ---- Bottom nav (3 routes) ---- */
+.bottomnav {
+  display: flex;
+  flex: 0 0 auto;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding-bottom: env(safe-area-inset-bottom, 8px);
+}
+.bottomnav a {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 10px 0;
+  min-height: 56px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+}
+.bottomnav a.active {
+  color: var(--accent);
+}
+
+/* ============================================================
+   COMPONENTS (from design-system/components.css)
+   ============================================================ */
+
+/* ---- Buttons ---- */
+.btn {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  font-weight: var(--weight-semibold);
+  line-height: 1;
+  min-height: var(--touch-min);
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+.btn:active {
+  transform: scale(0.97);
+}
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+.btn--block {
+  width: 100%;
+}
+.btn--primary {
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+.btn--primary:hover {
+  background: var(--accent-hover);
+}
+.btn--secondary {
+  background: var(--surface);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+.btn--secondary:hover {
+  background: var(--surface-sunken);
+}
+.btn--destructive {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.btn--destructive:hover {
+  background: var(--danger);
+  color: #fff;
+}
+.btn--ghost {
+  background: transparent;
+  color: var(--accent);
+}
+.btn--ghost:hover {
+  background: var(--accent-soft);
+}
+
+.icon-btn {
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border-radius: var(--radius-md);
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+.icon-btn:hover {
+  background: var(--surface-sunken);
+}
+.icon-btn:active {
+  transform: scale(0.92);
+}
+
+/* ---- Inputs ---- */
+.field {
+  font-family: var(--font-sans);
+  font-size: 17px;
+  color: var(--text-primary);
+  min-height: var(--touch-min);
+  width: 100%;
+  padding: 0 var(--space-4);
+  background: var(--surface);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color var(--duration-fast) var(--ease-standard);
+}
+.field::placeholder {
+  color: var(--text-tertiary);
+}
+.field:focus {
+  border-color: var(--accent);
+}
+.field--error {
+  border-color: var(--danger);
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--touch-min);
+  padding: 0 var(--space-4);
+  background: var(--surface-sunken);
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+}
+.search input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: var(--font-sans);
+  font-size: 16px;
+  color: var(--text-primary);
+  width: 100%;
+}
+
+/* chat input bar — pinned bottom, big send */
+.chatbar {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+}
+.chatbar textarea {
+  flex: 1;
+  resize: none;
+  border: 1.5px solid var(--border-strong);
+  background: var(--surface-sunken);
+  border-radius: var(--radius-xl);
+  padding: 12px var(--space-4);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 24px;
+  color: var(--text-primary);
+  outline: none;
+  max-height: 120px;
+  min-height: 48px;
+}
+.chatbar textarea:focus {
+  border-color: var(--accent);
+}
+.chatbar .send {
+  width: var(--touch-min);
+  height: var(--touch-min);
+  flex: 0 0 var(--touch-min);
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--text-on-accent);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.chatbar .send:disabled {
+  background: var(--surface-sunken);
+  color: var(--text-tertiary);
+}
+
+/* ---- Chat ---- */
+.chat-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: var(--space-4);
+  background: var(--bg);
+}
+.chat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.bubble {
+  max-width: 78%;
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--text-body-large-size);
+  line-height: var(--text-body-large-line);
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+.bubble--user {
+  align-self: flex-end;
+  background: var(--accent);
+  color: var(--text-on-accent);
+  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-sm) var(--radius-lg);
+}
+.bubble--assistant {
+  align-self: flex-start;
+  background: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) var(--radius-sm);
+}
+
+.typing {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  height: 24px;
+}
+.typing i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-tertiary);
+  animation: typing-bounce 1.2s var(--ease-standard) infinite;
+}
+.typing i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.typing i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes typing-bounce {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  30% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
+}
+
+/* tool-call indicator — maps to the `tool` SSE events */
+.toolcall {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface-sunken);
+  border-radius: var(--radius-pill);
+  font-size: 15px;
+  color: var(--text-secondary);
+  align-self: flex-start;
+}
+.toolcall--done {
+  color: var(--success);
+}
+.spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid var(--border-strong);
+  border-top-color: var(--accent);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---- Badges / tags ---- */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 26px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: var(--weight-medium);
+  background: var(--surface-sunken);
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+.tag--category {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.tag--soon {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+.tag--expired {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.tag--have {
+  background: var(--success-soft);
+  color: var(--success);
+}
+.tag--missing {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+/* ---- Cards ---- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+/* ---- Recipe card (inline in chat + recipes screen) ---- */
+.rc {
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
+}
+.rc-head {
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border);
+}
+.rc-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: var(--space-2);
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+.rc-meta .row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+.stepper button {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--text-primary);
+  font-size: 18px;
+  cursor: pointer;
+}
+.stepper .n {
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  min-width: 16px;
+  text-align: center;
+}
+.rc-body {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.rc-section-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: var(--weight-semibold);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.ing {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 16px;
+  color: var(--text-primary);
+}
+.ing.missing {
+  color: var(--text-tertiary);
+}
+.ing .mark {
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 22px;
+}
+.ing .qty {
+  margin-left: auto;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+.rc-actions {
+  display: flex;
+  gap: 10px;
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+/* ---- Pantry ---- */
+.pantry-controls {
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: var(--bg);
+}
+.tabs {
+  display: flex;
+  gap: var(--space-1);
+  background: var(--surface-sunken);
+  padding: var(--space-1);
+  border-radius: var(--radius-pill);
+}
+.tabs button {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: var(--weight-medium);
+  padding: 9px 0;
+  border-radius: var(--radius-pill);
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+.tabs button.active {
+  background: var(--surface);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+}
+.list-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 var(--space-4) var(--space-4);
+  background: var(--bg);
+}
+.list {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.prow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0 var(--space-4);
+  min-height: 60px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.prow:last-child {
+  border-bottom: none;
+}
+.pname {
+  font-size: 17px;
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+}
+.pname.faded {
+  color: var(--text-tertiary);
+}
+.pqty {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+.prow-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ---- Saved recipes ---- */
+.saved-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: var(--space-4);
+}
+.saved-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  text-align: left;
+  padding: var(--space-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+.saved-thumb {
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+}
+.saved-body {
+  flex: 1;
+}
+.saved-title {
+  font-size: 17px;
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+.saved-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-top: var(--space-1);
+}
+
+/* ---- Timer ---- */
+.timer-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--touch-min);
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--border-strong);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: var(--weight-medium);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+.timer-btn--running {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.timer-btn .time {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Cooking mode ---- */
+.cooking {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  z-index: 5;
+}
+.cook-top {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  min-height: 56px;
+}
+.cook-title {
+  flex: 1;
+  font-size: 17px;
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+.cook-count {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+.cook-progress {
+  height: 4px;
+  background: var(--surface-sunken);
+  margin: 0 var(--space-4);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.cook-progress span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width var(--duration-slow) var(--ease-standard);
+}
+.cook-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 28px;
+  padding: var(--space-6) 28px;
+}
+.cook-stepnum {
+  font-size: 17px;
+  font-weight: var(--weight-semibold);
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.cook-timer {
+  align-self: flex-start;
+  min-height: 60px;
+  padding: 0 var(--space-6);
+  font-size: 24px;
+  border-radius: var(--radius-lg);
+}
+.cook-timer .time {
+  font-size: 24px;
+}
+.cook-nav {
+  display: flex;
+  gap: 10px;
+  padding: var(--space-4);
+  border-top: 1px solid var(--border);
+}
+
+/* ---- Feedback ---- */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--surface-sunken) 25%,
+    var(--border) 50%,
+    var(--surface-sunken) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--text-primary);
+  color: var(--bg);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  font-size: 16px;
+}
+.toast .toast-action {
+  margin-left: auto;
+  color: var(--accent);
+  font-weight: var(--weight-semibold);
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 16px;
+  font-family: inherit;
+}
+
+.inline-error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--danger);
+  font-size: 14px;
+}
+.empty {
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 16px;
+  padding: var(--space-8);
+}

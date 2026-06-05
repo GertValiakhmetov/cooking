@@ -1,0 +1,27 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="_card.css">
+<style>
+  body { background: var(--bg); }
+  .chat { display: flex; flex-direction: column; gap: 12px; }
+  .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); }
+  [data-lucide] { width: 16px; height: 16px; }
+</style>
+</head>
+<body>
+  <div class="chat">
+    <div class="bubble bubble--user">Что приготовить из курицы и риса?</div>
+    <div class="bubble bubble--assistant">Давайте сделаем плов. Сначала проверю, что есть в кладовой.</div>
+    <div class="toolcall"><span class="spinner"></span>Проверяю кладовую…</div>
+    <div class="toolcall toolcall--done"><i data-lucide="check"></i>Нашёл 6 из 8 ингредиентов</div>
+    <div class="bubble bubble--assistant"><span class="typing"><i></i><i></i><i></i></span></div>
+  </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

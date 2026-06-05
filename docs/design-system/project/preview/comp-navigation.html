@@ -1,0 +1,52 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="_card.css">
+<style>
+  body { background: var(--bg); display: flex; flex-direction: column; gap: 18px; }
+  .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); margin-bottom: 8px; }
+  /* top bar */
+  .topbar { display:flex; align-items:center; gap:12px; padding: 10px 12px; background: var(--surface); border:1px solid var(--border); border-radius: var(--radius-md); min-height:56px; }
+  .topbar .t-title { flex:1; }
+  /* tabs */
+  .tabs { display:flex; gap:4px; background: var(--surface-sunken); padding:4px; border-radius: var(--radius-pill); width: fit-content; }
+  .tabs button { border:none; background:transparent; font-family:var(--font-sans); font-size:16px; font-weight:500; padding:8px 18px; border-radius: var(--radius-pill); color: var(--text-secondary); cursor:pointer; }
+  .tabs button.active { background: var(--surface); color: var(--text-primary); box-shadow: var(--shadow-sm); }
+  /* bottom nav */
+  .bottomnav { display:flex; background: var(--surface); border:1px solid var(--border); border-radius: var(--radius-lg); overflow:hidden; }
+  .bottomnav a { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px; color: var(--text-secondary); text-decoration:none; font-size:12px; font-weight:500; min-height:56px; justify-content:center; }
+  .bottomnav a.active { color: var(--accent); }
+  [data-lucide] { width: 22px; height: 22px; }
+  .topbar [data-lucide] { width: 22px; height: 22px; }
+</style>
+</head>
+<body>
+  <div>
+    <div class="lbl">top bar</div>
+    <div class="topbar">
+      <button class="icon-btn"><i data-lucide="chevron-left"></i></button>
+      <span class="t-title">Кладовая</span>
+      <button class="icon-btn"><i data-lucide="search"></i></button>
+      <button class="icon-btn"><i data-lucide="plus"></i></button>
+    </div>
+  </div>
+  <div>
+    <div class="lbl">tabs — Ingredients / Equipment</div>
+    <div class="tabs"><button class="active">Ингредиенты</button><button>Оборудование</button></div>
+  </div>
+  <div>
+    <div class="lbl">bottom nav — Chat / Pantry / Recipes</div>
+    <nav class="bottomnav">
+      <a class="active"><i data-lucide="message-circle"></i>Чат</a>
+      <a><i data-lucide="refrigerator"></i>Кладовая</a>
+      <a><i data-lucide="book-open"></i>Рецепты</a>
+    </nav>
+  </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,204 @@
+/* ============================================================
+   Су-шеф (Souschef) — Design Tokens
+   AI cooking assistant. Chat-first, used on a phone at the stove.
+   All values are NAMED TOKENS for downstream SvelteKit + Compose.
+   ============================================================ */
+
+/* ---- Fonts ---------------------------------------------------
+   Workhorse: Golos Text — humanist sans designed FOR Cyrillic,
+   tall x-height, reads well at arm's length. Mono: JetBrains Mono
+   for token labels / numerals in the showcase.
+   NOTE: loaded from Google Fonts CDN here. Drop self-hosted .woff2
+   into /fonts and swap the @import for production.
+---------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root {
+  /* ---- Font families ---- */
+  --font-sans: 'Golos Text', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* ---- Type weights ---- */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* ============================================================
+     TYPE SCALE  (role -> size / line-height / weight)
+     Tuned for fast scanning of numbered steps at arm's length.
+     ============================================================ */
+  --text-caption-size: 13px;
+  --text-caption-line: 18px;
+  --text-caption-weight: var(--weight-medium);
+  --text-caption-spacing: 0.01em;
+
+  --text-body-size: 16px;
+  --text-body-line: 24px;
+  --text-body-weight: var(--weight-regular);
+
+  /* chat messages + ingredient text — bigger default body */
+  --text-body-large-size: 18px;
+  --text-body-large-line: 28px;
+  --text-body-large-weight: var(--weight-regular);
+
+  --text-title-size: 22px;
+  --text-title-line: 28px;
+  --text-title-weight: var(--weight-semibold);
+
+  --text-heading-size: 28px;
+  --text-heading-line: 34px;
+  --text-heading-weight: var(--weight-bold);
+
+  /* COOKING MODE — one recipe step, full screen, readable from ~1 m */
+  --text-cooking-size: 40px;
+  --text-cooking-line: 50px;
+  --text-cooking-weight: var(--weight-semibold);
+
+  /* ============================================================
+     SPACING  (4px base scale)
+     ============================================================ */
+  --space-0: 0px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+
+  /* Touch target floor — messy hands */
+  --touch-min: 48px;
+
+  /* ============================================================
+     RADII — soft but not bubbly
+     ============================================================ */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  /* ============================================================
+     MOTION — subtle. Only streaming text + timers feel "alive".
+     ============================================================ */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 320ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-decelerate: cubic-bezier(0, 0, 0, 1);
+  --ease-emphasized: cubic-bezier(0.3, 0, 0, 1);
+}
+
+/* ============================================================
+   COLOR — semantic tokens, LIGHT theme (default)
+   Warm, calm, kitchen-y. Paprika accent, herb green, clay red.
+   ============================================================ */
+:root,
+[data-theme='light'] {
+  --bg: #FBF6EF;            /* warm paper */
+  --surface: #FFFFFF;       /* cards, sheets */
+  --surface-raised: #FFFFFF;/* menus, raised over surface (+shadow) */
+  --surface-sunken: #F3ECE2;/* input wells, track backgrounds */
+
+  --text-primary: #2A2521;  /* warm near-black */
+  --text-secondary: #6E655C;/* labels, meta (still AA on bg) */
+  --text-tertiary: #978C80;  /* timestamps, hints (use sparingly) */
+  --text-on-accent: #FFFFFF;
+
+  --accent: #C7522B;        /* paprika / terracotta */
+  --accent-hover: #AE441F;  /* pressed/darker */
+  --accent-soft: #F7E6DC;   /* tinted fill behind accent content */
+
+  --success: #2F7D4F;       /* herb green */
+  --success-soft: #E2F0E6;
+  --warning: #B7791F;       /* amber — expires soon */
+  --warning-soft: #F8ECCF;
+  --danger: #B23A2B;        /* clay red — destructive */
+  --danger-soft: #F7E2DD;
+
+  --border: #E7DDD0;        /* hairline on warm bg */
+  --border-strong: #D6C9B8; /* dividers needing more presence */
+
+  /* warm-tinted elevation */
+  --shadow-sm: 0 1px 2px rgba(58, 43, 30, 0.06), 0 1px 3px rgba(58, 43, 30, 0.05);
+  --shadow-md: 0 2px 6px rgba(58, 43, 30, 0.08), 0 4px 12px rgba(58, 43, 30, 0.06);
+  --shadow-lg: 0 8px 24px rgba(58, 43, 30, 0.12), 0 2px 6px rgba(58, 43, 30, 0.08);
+
+  color-scheme: light;
+}
+
+/* ============================================================
+   COLOR — DARK theme. Kitchens at night.
+   ============================================================ */
+[data-theme='dark'] {
+  --bg: #181410;
+  --surface: #221D18;
+  --surface-raised: #2B251F;
+  --surface-sunken: #14110D;
+
+  --text-primary: #F3EBE0;
+  --text-secondary: #B0A597;
+  --text-tertiary: #807668;
+  --text-on-accent: #1A140F;
+
+  --accent: #E8825C;        /* lifted terracotta for dark bg */
+  --accent-hover: #F0997A;
+  --accent-soft: #3A2A22;
+
+  --success: #5FB880;
+  --success-soft: #1E2E23;
+  --warning: #E0A94E;
+  --warning-soft: #322817;
+  --danger: #E5705C;
+  --danger-soft: #361F1B;
+
+  --border: #36302A;
+  --border-strong: #4A4239;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.45), 0 4px 14px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.4);
+
+  color-scheme: dark;
+}
+
+/* ============================================================
+   SEMANTIC TYPE CLASSES — apply roles directly
+   ============================================================ */
+.t-caption {
+  font: var(--text-caption-weight) var(--text-caption-size) / var(--text-caption-line) var(--font-sans);
+  letter-spacing: var(--text-caption-spacing);
+  color: var(--text-secondary);
+}
+.t-body {
+  font: var(--text-body-weight) var(--text-body-size) / var(--text-body-line) var(--font-sans);
+  color: var(--text-primary);
+}
+.t-body-large {
+  font: var(--text-body-large-weight) var(--text-body-large-size) / var(--text-body-large-line) var(--font-sans);
+  color: var(--text-primary);
+}
+.t-title {
+  font: var(--text-title-weight) var(--text-title-size) / var(--text-title-line) var(--font-sans);
+  color: var(--text-primary);
+}
+.t-heading {
+  font: var(--text-heading-weight) var(--text-heading-size) / var(--text-heading-line) var(--font-sans);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+.t-cooking {
+  font: var(--text-cooking-weight) var(--text-cooking-size) / var(--text-cooking-line) var(--font-sans);
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+.t-mono {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: -0.01em;
+}

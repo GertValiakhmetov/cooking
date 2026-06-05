@@ -1,0 +1,37 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="_card.css">
+<style>
+  body { display: flex; flex-direction: column; gap: 18px; }
+  .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); margin-bottom: 8px; }
+  [data-lucide] { width: 14px; height: 14px; }
+</style>
+</head>
+<body>
+  <div>
+    <div class="lbl">category tags</div>
+    <div class="row">
+      <span class="tag tag--category">Овощи</span>
+      <span class="tag tag--category">Молочное</span>
+      <span class="tag tag--category">Специи</span>
+      <span class="tag">Бакалея</span>
+    </div>
+  </div>
+  <div>
+    <div class="lbl">status badges</div>
+    <div class="row">
+      <span class="tag tag--soon"><i data-lucide="clock"></i>Скоро истечёт</span>
+      <span class="tag tag--expired"><i data-lucide="alert-triangle"></i>Просрочено</span>
+      <span class="tag tag--have"><i data-lucide="check"></i>Всё есть</span>
+      <span class="tag tag--missing">Не хватает 2</span>
+    </div>
+  </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>

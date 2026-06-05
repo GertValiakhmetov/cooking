@@ -1,0 +1,37 @@
+<!-- @dsCard group="Components" -->
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="../colors_and_type.css">
+<link rel="stylesheet" href="../components.css">
+<link rel="stylesheet" href="_card.css">
+<style>
+  body { background: var(--bg); display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+  .lbl { font-family: var(--font-mono); font-size: 10px; color: var(--text-secondary); margin-bottom: 8px; }
+  [data-lucide] { width: 18px; height: 18px; }
+  .sk-list { display:flex; flex-direction:column; gap:12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:14px; }
+  .sk-row { display:flex; align-items:center; gap:12px; }
+</style>
+</head>
+<body>
+  <div>
+    <div class="lbl">toast</div>
+    <div class="toast"><i data-lucide="check-circle-2"></i>Рецепт сохранён<button class="toast-action">Отменить</button></div>
+    <div class="lbl" style="margin-top:16px">inline error</div>
+    <div class="inline-error"><i data-lucide="alert-circle"></i>Не удалось загрузить кладовую</div>
+    <div class="lbl" style="margin-top:16px">empty state</div>
+    <div class="empty" style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:20px">Здесь пока пусто. Добавьте первый ингредиент.</div>
+  </div>
+  <div>
+    <div class="lbl">loading skeleton — list</div>
+    <div class="sk-list">
+      <div class="sk-row"><div class="skeleton" style="width:40px;height:40px;border-radius:var(--radius-md)"></div><div style="flex:1"><div class="skeleton" style="width:60%;height:14px;margin-bottom:8px"></div><div class="skeleton" style="width:35%;height:11px"></div></div></div>
+      <div class="sk-row"><div class="skeleton" style="width:40px;height:40px;border-radius:var(--radius-md)"></div><div style="flex:1"><div class="skeleton" style="width:75%;height:14px;margin-bottom:8px"></div><div class="skeleton" style="width:45%;height:11px"></div></div></div>
+      <div class="sk-row"><div class="skeleton" style="width:40px;height:40px;border-radius:var(--radius-md)"></div><div style="flex:1"><div class="skeleton" style="width:50%;height:14px;margin-bottom:8px"></div><div class="skeleton" style="width:30%;height:11px"></div></div></div>
+    </div>
+  </div>
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>lucide.createIcons();</script>
+</body>
+</html>
