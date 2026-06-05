@@ -242,6 +242,7 @@ chatRoutes.post(
           await stream.writeSSE({ event: ev.type, data: JSON.stringify(ev) });
         }
       } catch (err) {
+        console.error("chat stream failed:", err);
         await stream.writeSSE({
           event: "error",
           data: JSON.stringify({ type: "error", message: (err as Error).message }),
