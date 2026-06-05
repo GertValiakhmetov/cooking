@@ -56,6 +56,17 @@
     }
   });
 
+  // The agent is working but has nothing on screen yet: before the first token,
+  // after a tool finished (model is digesting the result), while a recipe builds.
+  const thinking = $derived.by(() => {
+    if (!busy) return false;
+    const last = feed[feed.length - 1];
+    if (!last) return false;
+    if (last.kind === "tool") return !last.running;
+    if (last.kind === "assistant") return !last.streaming;
+    return true; // user message or recipe block
+  });
+
   const convId = $derived(page.url.searchParams.get("c"));
   const conv = $derived(conversations.list.find((c) => c.id === convId));
   const title = $derived.by(() => {
@@ -305,6 +316,9 @@
             />
           {/if}
         {/each}
+        {#if thinking}
+          <div class="toolcall"><span class="spinner"></span>Думаю…</div>
+        {/if}
       </div>
     {/if}
   </div>
