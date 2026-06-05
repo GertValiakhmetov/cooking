@@ -20,6 +20,9 @@
   let tab = $state<"prod" | "tech">("prod");
   let products = $state<InventoryItem[]>([]);
   let appliances = $state<EquipmentItem[]>([]);
+  // True until the first fetch answers — keeps the empty state from flashing before data arrives.
+  let loadingProducts = $state(true);
+  let loadingAppliances = $state(true);
   let q = $state("");
   let openId = $state<string | null>(null);
   let adding = $state(false);
@@ -35,8 +38,16 @@
   }
 
   $effect(() => {
-    void api.inventory.list().then((r) => (products = r.items)).catch(() => {});
-    void api.equipment.list().then((r) => (appliances = r.items)).catch(() => {});
+    void api.inventory
+      .list()
+      .then((r) => (products = r.items))
+      .catch(() => {})
+      .finally(() => (loadingProducts = false));
+    void api.equipment
+      .list()
+      .then((r) => (appliances = r.items))
+      .catch(() => {})
+      .finally(() => (loadingAppliances = false));
   });
 
   function num(q: string | null): number | null {
@@ -180,7 +191,9 @@
   <div class="list-scroll">
     <div class="list-inner">
       {#if tab === "prod"}
-        {#if products.length === 0}
+        {#if loadingProducts}
+          <!-- first fetch in flight — render nothing instead of flashing the empty state -->
+        {:else if products.length === 0}
           <div class="empty">
             <div class="empty-ic"><Refrigerator size={28} /></div>
             <div class="empty-text">Здесь пока пусто. Добавь первый продукт.</div>
@@ -234,6 +247,8 @@
             </div>
           {/each}
         {/if}
+      {:else if loadingAppliances}
+        <!-- first fetch in flight — render nothing instead of flashing the empty state -->
       {:else if appliances.length === 0}
         <div class="empty">
           <div class="empty-ic"><CookingPot size={28} /></div>

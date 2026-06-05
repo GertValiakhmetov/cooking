@@ -7,6 +7,8 @@
   import type { Recipe } from "$lib/recipe";
 
   let recipes = $state<SavedRecipe[]>([]);
+  // True until the first fetch answers — keeps the empty state from flashing before data arrives.
+  let loading = $state(true);
   let q = $state("");
   let detail = $state<SavedRecipe | null>(null);
   let cooking = $state<Recipe | null>(null);
@@ -37,7 +39,8 @@
             .catch(() => {});
         }
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => (loading = false));
   });
 
   const ql = $derived(q.trim().toLowerCase());
@@ -77,7 +80,9 @@
   {:else}
     <header class="topbar-plain"><span class="tp-title">Рецепты</span></header>
 
-    {#if recipes.length === 0}
+    {#if loading}
+      <!-- first fetch in flight — render nothing instead of flashing the empty state -->
+    {:else if recipes.length === 0}
       <div class="list-scroll">
         <div class="list-inner">
           <div class="empty">

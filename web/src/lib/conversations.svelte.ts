@@ -36,12 +36,6 @@ class ConversationsStore {
     const updated = await api.conversations.rename(id, title);
     this.list = this.list.map((c) => (c.id === id ? updated : c));
   }
-
-  /** Reflect a server-side title/order change (e.g. auto-title after first message). */
-  patchLocal(conv: Conversation): void {
-    const rest = this.list.filter((c) => c.id !== conv.id);
-    this.list = [conv, ...rest];
-  }
 }
 
 export const conversations = new ConversationsStore();
