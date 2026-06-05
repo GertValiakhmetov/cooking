@@ -1211,23 +1211,34 @@ body {
 /* ============================================================
    CHAT INPUT BAR
    ============================================================ */
+/* the chatbar is just transparent padding around the composer card — no divider */
 .chatbar {
   flex: 0 0 auto;
-  display: block;
-  padding: var(--space-3);
-  padding-bottom: max(var(--space-3), env(safe-area-inset-bottom));
-  background: var(--surface);
-  border-top: 1px solid var(--border);
+  padding: var(--space-2) var(--space-3) max(var(--space-3), env(safe-area-inset-bottom));
+  background: var(--bg);
 }
 .app--rail .chatbar,
 .app--desktop .chatbar {
-  padding: var(--space-3) var(--space-6) var(--space-4);
+  padding: var(--space-2) var(--space-6) var(--space-5);
 }
+/* composer card — a rounded "window" pinned to the bottom (claude.ai-style) */
 .chatbar-inner {
   display: flex;
   align-items: flex-end;
   gap: var(--space-2);
   width: 100%;
+  background: var(--surface);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  box-shadow: var(--shadow-sm);
+  transition:
+    border-color var(--duration-fast) var(--ease-standard),
+    box-shadow var(--duration-fast) var(--ease-standard);
+}
+.chatbar-inner:focus-within {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-md);
 }
 .app--rail .chatbar-inner,
 .app--desktop .chatbar-inner {
@@ -1237,32 +1248,30 @@ body {
 .chatbar textarea {
   flex: 1;
   resize: none;
-  border: 1.5px solid var(--border-strong);
-  background: var(--surface-sunken);
-  border-radius: var(--radius-xl);
-  /* 10px keeps a single 24px line inside the 48px min-height (border-box: 48 − 3 border − 20 = 25 ≥ 24) */
-  padding: 10px var(--space-4);
+  border: none;
+  background: transparent;
+  padding: 8px 0;
   font-family: var(--font-sans);
   font-size: 17px;
   line-height: 24px;
   color: var(--text-primary);
   outline: none;
   max-height: 120px;
-  min-height: 48px;
+  min-height: 24px;
   /* never show the scrollbar; the textarea keeps the caret in view on its own */
   overflow-y: hidden;
   scrollbar-width: none;
 }
+.chatbar textarea::placeholder {
+  color: var(--text-tertiary);
+}
 .chatbar textarea::-webkit-scrollbar {
   display: none;
 }
-.chatbar textarea:focus {
-  border-color: var(--accent);
-}
 .chatbar .send {
-  width: var(--touch-min);
-  height: var(--touch-min);
-  flex: 0 0 var(--touch-min);
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
   border-radius: var(--radius-pill);
   background: var(--accent);
   color: var(--text-on-accent);
@@ -1271,10 +1280,15 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  transition: background var(--duration-fast) var(--ease-standard);
+}
+.chatbar .send:hover:not(:disabled) {
+  background: var(--accent-hover);
 }
 .chatbar .send:disabled {
   background: var(--surface-sunken);
   color: var(--text-tertiary);
+  cursor: default;
 }
 
 /* ============================================================
