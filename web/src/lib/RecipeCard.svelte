@@ -123,7 +123,8 @@
             <span class="step-n">{i + 1}</span>
             <div class="step-main">
               <div class="step-text">
-                {#if step.title}<strong>{step.title}.</strong> {/if}{step.content}
+                {#if step.title}<div class="step-title">{step.title}</div>{/if}
+                {step.content}
               </div>
               {#if step.timerSeconds}
                 <button

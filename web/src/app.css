@@ -1133,6 +1133,10 @@ body {
   line-height: 24px;
   color: var(--text-primary);
 }
+.step-title {
+  font-weight: var(--weight-semibold);
+  margin-bottom: var(--space-1);
+}
 .step-timer {
   display: inline-flex;
   align-items: center;
