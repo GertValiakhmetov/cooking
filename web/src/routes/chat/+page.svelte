@@ -6,6 +6,7 @@
   import { streamChat } from "$lib/chat-stream";
   import { conversations } from "$lib/conversations.svelte";
   import CookingMode from "$lib/CookingMode.svelte";
+  import { renderMarkdown } from "$lib/markdown";
   import RecipeCard from "$lib/RecipeCard.svelte";
   import { asRecipe, type Recipe } from "$lib/recipe";
   import { theme } from "$lib/theme.svelte";
@@ -334,7 +335,10 @@
             </div>
           {:else if entry.kind === "assistant"}
             <div class="msg msg--assistant">
-              <div class="bubble bubble--assistant">{entry.text}{#if entry.streaming}<span class="caret"></span>{/if}</div>
+              <!-- eslint-disable-next-line svelte/no-at-html-tags — sanitized in renderMarkdown -->
+              <div class="bubble bubble--assistant bubble--md" class:streaming={entry.streaming}>
+                {@html renderMarkdown(entry.text)}
+              </div>
               {#if ui.mode !== "mobile" && !entry.streaming && entry.text}
                 <div class="msg-actions">
                   <button class="msg-act" onclick={() => copy(entry.text)}><Copy size={14} />Копировать</button>
