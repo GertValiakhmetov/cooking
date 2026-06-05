@@ -27,6 +27,14 @@
   let servings = $state(recipe.servings);
   const ratio = $derived(recipe.servings > 0 ? servings / recipe.servings : 1);
 
+  function portionsWord(n: number): string {
+    const mod10 = n % 10;
+    const mod100 = n % 100;
+    if (mod10 === 1 && mod100 !== 11) return "порцию";
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "порции";
+    return "порций";
+  }
+
   // Scale a base amount by the servings ratio, formatted the Russian way (comma decimals).
   function scaleAmount(amount: number | null, unit: string | null): string {
     if (amount == null) return "по вкусу";
@@ -117,6 +125,13 @@
 
     <div class="rc-col rc-col--steps">
       <div class="rc-section-label">Приготовление</div>
+      {#if servings !== recipe.servings}
+        <!-- Степпер пересчитывает только колонку ингредиентов; граммовки в тексте шагов
+             остаются базовыми — честно предупреждаем, а не молчим. -->
+        <div class="rc-steps-note">
+          Количества в шагах — на {recipe.servings} {portionsWord(recipe.servings)}
+        </div>
+      {/if}
       <div class="steps">
         {#each recipe.steps as step, i (i)}
           <div class="step">
