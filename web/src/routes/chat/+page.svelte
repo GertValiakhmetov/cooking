@@ -68,6 +68,41 @@
     return true; // user message or recipe block
   });
 
+  // Cooking-themed «thinking» verbs, claude.ai-style: a curated list rotated at
+  // random — not model-generated (that would add latency to mask latency).
+  const THINKING_PHRASES = [
+    "Думаю…",
+    "Помешиваю…",
+    "Довожу до кипения…",
+    "Шинкую…",
+    "Мариную…",
+    "Взбиваю…",
+    "Томлю на медленном огне…",
+    "Пробую на соль…",
+    "Разогреваю сковородку…",
+    "Заглядываю в поваренную книгу…",
+    "Точу ножи…",
+    "Завязываю фартук…",
+    "Карамелизую…",
+    "Снимаю пробу…",
+    "Колдую над плитой…",
+    "Сервирую мысли…",
+  ];
+  let thinkingPhrase = $state(THINKING_PHRASES[0]);
+  $effect(() => {
+    if (!thinking) return;
+    const pick = () => {
+      let next = thinkingPhrase;
+      while (next === thinkingPhrase) {
+        next = THINKING_PHRASES[Math.floor(Math.random() * THINKING_PHRASES.length)];
+      }
+      thinkingPhrase = next;
+    };
+    pick();
+    const handle = setInterval(pick, 2500);
+    return () => clearInterval(handle);
+  });
+
   const convId = $derived(page.url.searchParams.get("c"));
   const conv = $derived(conversations.list.find((c) => c.id === convId));
   const title = $derived.by(() => {
@@ -317,7 +352,9 @@
           {/if}
         {/each}
         {#if thinking}
-          <div class="toolcall"><span class="spinner"></span>Думаю…</div>
+          <div class="toolcall">
+            <span class="spinner"></span>{#key thinkingPhrase}<span class="thinking-phrase">{thinkingPhrase}</span>{/key}
+          </div>
         {/if}
       </div>
     {/if}
