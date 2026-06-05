@@ -71,6 +71,14 @@ export const api = {
       request<{ messages: StoredMessage[] }>(`/conversations/${id}/messages`),
   },
 
+  equipment: {
+    create: (name: string, type: string) =>
+      request<{ id: string }>("/equipment", {
+        method: "POST",
+        body: JSON.stringify({ name, type }),
+      }),
+  },
+
   recipes: {
     save: (recipe: Recipe) =>
       request<SavedRecipe>("/recipes", {

@@ -64,6 +64,7 @@
   }
 
   const onRedeem = $derived(page.url.pathname.startsWith("/redeem"));
+  const onOnboarding = $derived(page.url.pathname.startsWith("/onboarding"));
   const activeConvId = $derived(page.url.searchParams.get("c"));
   const isActiveTab = (href: string) => page.url.pathname.startsWith(href);
   const convTitle = (c: Conversation) => c.title ?? "Новый чат";
@@ -83,6 +84,11 @@
         <p class="t-body-large">Это приложение по приглашениям.</p>
         <p class="t-caption">Открой инвайт-ссылку, которую тебе прислали, чтобы войти.</p>
       </div>
+    </div>
+  {:else if onOnboarding}
+    <!-- Авторизован, но в онбординге — полноэкранный флоу без навигации. -->
+    <div class="main">
+      {@render children()}
     </div>
   {:else}
     {#if ui.mode === "desktop"}

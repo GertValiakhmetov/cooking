@@ -41,6 +41,17 @@
   let seq = 0;
   const nextId = () => ++seq;
   let lastLoadedId: string | null | undefined;
+  let seeded = false;
+
+  // Onboarding "Расскажи ассистенту" path lands here with ?seed=pantry — prefill a
+  // starter so the user just lists products; the assistant records them via tools.
+  $effect(() => {
+    if (page.url.searchParams.get("seed") === "pantry" && !seeded) {
+      seeded = true;
+      draft = "Запиши, что у меня есть из продуктов: ";
+      requestAnimationFrame(() => taEl?.focus());
+    }
+  });
 
   const convId = $derived(page.url.searchParams.get("c"));
   const conv = $derived(conversations.list.find((c) => c.id === convId));

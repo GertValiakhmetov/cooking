@@ -26,7 +26,8 @@
     try {
       const { jwt } = await api.redeem(token, name.trim() || undefined);
       auth.setToken(jwt);
-      await goto("/chat", { replaceState: true });
+      // First run after redeeming the invite → equipment + pantry setup, then chat.
+      await goto("/onboarding", { replaceState: true });
     } catch (err) {
       status = "error";
       message =
